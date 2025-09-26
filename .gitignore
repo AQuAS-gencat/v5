@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+datasets/*
+*.parquet
+*.duckdb
+*.duckdb.wal
+maps/*
+
+
+
+
+.httr-oauth
+.DS_Store
+.quarto

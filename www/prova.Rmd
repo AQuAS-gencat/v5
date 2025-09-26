@@ -1,0 +1,109 @@
+---
+title: ""
+output: 
+  html_document:
+    self_contained: false  # Ensures external styles are not embedded
+    css: "www/app.css"     # Point to your app's CSS file for styling
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(flextable)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Índex socioeconòmic compost (ISC) per ABS
+
+L'índex socioeconòmic compost (ISC) de l'AQuAS és un índex de privació elaborat per àrea bàsica de salut (ABS) a partir d'una anàlisi de components principals de les següents variables:
+
+* % de població desocupada (inclou inactiva)
+* % de treballadors manuals
+* % de persones amb estudis insuficients
+* Nivell de renda (trams de l'indicador de copagament)
+* % de població estrangera procedent de països de renda baixa
+* % de gent gran que viu sola
+* Taxa de mortalitat prematura
+* Taxa d'hospitalització evitable per patologies associades a privació
+
+Els valors més alts de l'índex indiquen una major privació de l'ABS (pitjors condicions socioeconòmiques) i els valors més baixos, una menor privació (millors condicions socioeconòmiques).
+
+Per fer una anàlisi normalment
+considerem 4 grups d'ABS, tot i que a vegades fem servir la distribució en decils. Els punts
+que marquen cada grup s'estableixen pels punts d'inflexió de la corba:
+
+* Privació baixa: ISC menor de 20
+* Privació mitjana baixa: ISC entre 20 i 40
+* Privació mitjana alta: ISC entre 40 i 60
+* Privació molt alta: ISC superior a 60
+
+[Per a més informació sobre l'índex, podeu consultar-ne la presentació](https://blog.aquas.cat/wp-content/uploads/2017/04/Indicador-Socioecon%C3%B2mic-Compost-AQuAS.pdf) 
+
+<br>
+
+## Índex Socioeconòmic Territorial (IST) per ABS
+l'índex socioeconòmic territorial (IST) és un índex sintètic que resumeix en un únic valor diverses característiques socioeconòmiques de la població,
+i que es defineix com una ponderació de sis indicadors de situació laboral, nivell d'estudis, immigració i renda:
+
+* Població ocupada
+* Treballadors de baixa qualificació
+* Població amb estudis baixos
+* Població jove sense estudis postobligatoris
+* Estrangers de països de renda baixa o mitjana
+* Renda mitjana per persona
+
+
+La metodologia utilitzada per al càlcul de l'IST és l'anàlisi de components principals a partir de les seccions censals,
+establint-se un valor de referència per a Catalunya igual a 100 i un valor per a cada unitat territorial en comparació amb el valor mitjà de Catalunya.. 
+
+[Per a més informació, l'Idescat actualitza anualment l'IST per agrupacions censals, municipis i comarques](https://www.idescat.cat/pub/?id=ist) 
+
+<br>
+
+## Criteris per definir l'entorn (rural/urbà) 
+
+### Rural
+<7.500 habitants (En el centre més gran de l’EAP) i <100 habitants/km2 (En l’EAP)
+
+### Semirural
+<7.500 habitants i >100 habitants/ km^2^ o bé >7.500 habitants i <100 habitants/ km^2^
+
+### Semiurbà
+&gt;7.500 habitants i >100 habitants/ km^2^
+
+### Urbà
+&gt;10.000 habitants i >150 habitants/ km^2^
+
+
+```{r taula entorn dades, include=FALSE}
+table_data <- data.frame(
+  Regió = c(
+    "Alt Pirineu i Aran", "Barcelona Ciutat", "Camp de Tarragona", "Catalunya Central", 
+    "Girona", "Lleida", "Metropolitana Nord", "Metropolitana Sud", 
+    "Terres de l'Ebre", "Catalunya"
+  ),
+  Rurals = c(63, "", 18, 39, 22, 33, "", 3, 45, 12),
+  Semirural = c(38, "", 21, 18, 20, 29, "", 2, 18, 9),
+  Semiurbans = c("", "", 12, 18, 27, 4, 11, 6, 36, 10),
+  Urbans = c("", 100, 48, 24, 32, 33, 89, 89, "", 68)
+)
+
+```
+
+```{r echo=FALSE}
+
+flextable(table_data) %>%
+  set_header_labels(
+    Rurals = "Rurals", Semirural = "Semirural", 
+    Semiurbans = "Semiurbans", Urbans = "Urbans"
+  ) %>%
+  set_caption("Distribució d'EAP per regió sanitària segons entorn (%)") %>%
+  theme_vanilla()
+```
+
+<br>
+
+## Classificació dels centres hospitalaris segons nivell
+
+<br>
+

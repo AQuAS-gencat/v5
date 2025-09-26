@@ -1,0 +1,332 @@
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link href="css/custom.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
+
+<!-- Capçalera -->
+<div class="container-fluid px-5 py-5">
+    <div class="row align-items-center justify-content-center">
+        <div class="col-5 text-start">
+            <h2><span class="qia-accent">Central de Resultats: </span>Dades del sistema de salut de Catalunya</h2>
+            <p class="py-4">La Central de Resultats mesura, avalua i difon els resultats en salut i qualitat assolits pels diferents agents que integren el sistema sanitari català.</p>
+            <button class="btn btn-md btn-primary rounded-pill border-white qia-btn-primary">Sobre l'eina</button>
+        </div>
+        <div class="col-5 text-center">
+            <img width="60%" src="header_plot.svg"></img>
+        </div>
+    </div>
+</div>
+
+<!-- Secció 1: Quines dades pots consultar -->
+<div class="container-fluid py-5">
+    <!-- Onada -->
+    <div class="row position-relative">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <defs>
+                    <linearGradient id="wave" x1="0%" x2="100%" y1="0%" y2="0%">
+                      <stop offset="0%" stop-color="#ffffff" />
+                      <stop offset="100%" stop-color="#e8f0ff" />
+                    </linearGradient>
+                  </defs>
+                <path fill="url(#wave)" fill-opacity="1" d="M0,256L60,224C120,192,240,128,360,122.7C480,117,600,171,720,197.3C840,224,960,224,1080,197.3C1200,171,1320,117,1380,90.7L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
+            </svg>
+        </div>
+        <div class="position-absolute text-center py-5">
+            <h2>Quines dades pots consultar?</h2>
+        </div>
+    </div>
+    <!-- Característiques -->
+    <div class="row px-5 justify-content-center align-items-center">
+        <div class="col-5">
+            <h2><span class="qia-accent align-items-center">Visor </span>de centres i territoris</h2>
+            <p class="py-4">Descobreix tres noves funcionalitats addicionals, disponibles per a la majoria d'indicadors amb visió de centre o territori.</p>
+        </div>
+        <div class="col-5">
+            <div class="d-flex qia-item ms-3">
+                <!-- Icon -->
+                <div class="align-items-center justify-content-center fs-2 mb-3">
+                    <object data="icon_resum.svg" width="150"></object>
+                </div>
+                <!-- Text -->
+                <div class="py-3">
+                    <h5>RESUM</h5>
+                    <p>Obté un resum de tots els indicadors disponibles per centre i territori.</p>
+                </div>
+            </div>
+            <div class="d-flex qia-item ms-3">
+                <!-- Icon -->
+                <div class="align-items-center justify-content-center fs-2 mb-3">
+                    <object data="icon_variabilitat.svg" width="150"></object>
+                </div>
+                <!-- Text -->
+                <div class="py-3">
+                    <h5>VARIABILITAT</h5>
+                    <p>Compara la variabilitat geogràfica en els resultats d'un indicador.</p>
+                </div>
+            </div>
+            <div class="d-flex qia-item ms-3">
+                <!-- Icon -->
+                <div class="align-items-center justify-content-center fs-2 mb-3">
+                    <object data="icon_evolucio.svg" width="150"></object>
+                </div>
+                <!-- Text -->
+                <div class="py-3">
+                    <h5>EVOLUCIÓ TEMPORAL</h5>
+                    <p>Compara l'evolució temporal d'un indicador entre centres i territoris.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Call to action -->
+    <div class="row justify-content-center py-3">
+        <div class="col-4 text-center">
+          <button class="btn btn-md btn-primary rounded-pill border-white qia-btn-primary"
+                   <a onclick="$('li:eq(1) a').tab('show');" role="button" class="btn btn-md btn-primary rounded-pill border-white qia-btn-primary">
+            Accedeix al visor
+                    </a>
+            </button>
+        </div>
+    </div>   
+</div>
+
+<!-- Secció 2: PBI -->
+<div class="container-fluid px-5 py-5">
+    <!-- Descripció PBI -->
+    <div class="row justify-content-center align-items-center">
+        <div class="col-5">
+            <img width="75%" src="pbi_screenshot.PNG"></img>
+        </div>
+        <div class="col-5">
+            <h2><span class="qia-accent align-items-center">Aplicatiu de dades </span>per als sis àmbits d'atenció</h2>
+            <p class="py-4">Explora 257 indicadors actualitzats, amb filtres i mapes interactius per cadascun dels àmbits.<br><br>
+            Els aplicatius inclouen ara fitxes d'anàlisi interactives per a la majoria d'indicadors.</p>
+            <button class="btn btn-md btn-primary rounded-pill border-white qia-btn-primary">Cercador d'indicadors</button>
+        </div>
+    </div>
+    
+    <!-- Links a PBI -->
+    <div class="row justify-content-center px-5 py-3">
+        <!-- Atenció Primària -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#3CA2E6"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="35em" dy=".35em" font-family="Arial" font-weight="bold">AP</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiMGNkYmJhNWQtZTEwOS00MzU0LWE3NjctOWNkNjNhNTAwYzhkIiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Atenció Primària</a>
+        </div>
+        <!-- Atenció Hospitalària -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#E83F69"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="30em" dy=".35em" font-family="Arial" font-weight="bold">AH</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiYmM5YmNkYmQtMTQ4OC00MmQwLTkwNTItMmRiYTZkODc0YWViIiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Atenció Hospitalària</a>
+        </div>
+        <!-- Atenció Intermèdia -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#74CF51"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="30em" dy=".35em" font-family="Arial" font-weight="bold">AI</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiOWU3NWY3NjktOGFiYS00MTFjLTkyMDYtYTk0ZjM1NGMyM2M0IiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Atenció Intermèdia</a>
+        </div>
+        <!-- Salut Mental i Addiccions -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#00A3A3"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="20em" dy=".35em" font-family="Arial" font-weight="bold">SMiA</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiYjdlNjkzZmEtNDAwYS00MTgyLTk0MjgtNTQ2MDRlNWI3Zjg5IiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Salut Mental i Addiccions</a>
+        </div>
+        <!-- Emergències Mèdiques -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#F0AB84"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="30em" dy=".35em" font-family="Arial" font-weight="bold">EM</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiZmRjMDU2ZjktYmI3YS00YjRiLWI4MmMtMzM2ZWJhMjg5MGEyIiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Emergències Mèdiques</a>
+        </div>
+        <!-- Salut Pública -->
+        <div class="col-2 qia-item text-center py-3">
+            <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+                <circle cx="50%" cy="50%" r="50%" fill="#3CA2E6"></circle>
+                <text x="50%" y="50%" text-anchor="middle" fill="#BFDDFA" font-size="30em" dy=".35em" font-family="Arial" font-weight="bold">SP</text>
+            </svg><br><br>
+            <a href="https://app.powerbi.com/view?r=eyJrIjoiMTBkODNjM2YtZjczMy00MTA0LWJmYjUtZTI4Yzc3ZGViNDRkIiwidCI6IjNiOTQyN2RjLWQzMGUtNDNiYy04YzA2LWZmNzI1MzY3NmZlYyIsImMiOjh9" target="_blank" class="qia-ambit">Salut Pública</a>
+        </div>
+    </div>
+</div>
+
+<!-- Secció 3 -->
+ <div class="container-fluid px-5 py-5">
+    <!-- Descripció informes -->
+    <div class="row justify-content-center">
+        <div class="col-6 text-center">
+            <h2><span class="qia-accent align-items-center">Informes </span>de cada àmbit</h2>
+            <p class="py-4">Consulta i descarrega els informes per àmbits d’atenció sobre els resultats obtinguts pels centres del sistema sanitari públic.</p>
+        </div>
+    </div>
+    <!-- Links a informes -->
+    <div class="row justify-content-center px-5 py-3">
+        <!-- Atenció Primària -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3">
+                <h6>Atenció<br>Primària</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+        <!-- Atenció Hospitalària -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3">
+                <h6>Atenció<br>Hospitalària</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+        <!-- Atenció Intermèdia -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3">
+                <h6>Atenció<br>Intermèdia</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+        <!-- Salut Mental i Addiccions -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3">
+                <h6>Salut Mental<br>i Addiccions</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+        <!-- Emergències Mèdiques -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3">
+                <h6>Emergències<br>Mèdiques</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+        <!-- Salut Pública -->
+        <div class="col-2 qia-item p-3 text-center">
+            <div class="py-3 px-5">
+                <h6>Salut Pública</h6>
+            </div>
+            <div class="">
+                <a href="#">
+                    <img src="icon-square-plus.svg" width="40"></img>
+                </a>
+            </div>
+        </div>
+    </div>
+ </div>
+
+<!-- Secció 4 -->
+<div class="container-fluid">
+    <div class="row position-relative">
+        <!-- Gradient horitzontal -->
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+                      <stop offset="0%" stop-color="#ffffff" />
+                      <stop offset="100%" stop-color="#e8f0ff" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#gradient)"></rect>
+            </svg>
+        </div>
+        <!-- Text sobre la CdR -->
+        <div class="position-absolute py-5">
+            <!-- Més informació -->
+            <div class="row px-5 justify-content-center align-items-center pb-3">
+                <div class="col-5 px-3">
+                    <h2>Més informació sobre la Central de Resultats</h2>
+                </div>
+                <div class="col-5 px-3">
+                    <p>La Central de Resultats és una iniciativa de l’Agència de Qualitat i Avaluació Sanitàries de Catalunya (AQuAS) que vol fomentar i permetre als professionals i gestors dels serveis sanitaris la comparació i el monitoratge de la qualitat i l'eficiència per a la millora continua de l'assistència.</p>
+                </div>
+            </div>
+            <!-- Call to action -->
+            <div class="row justify-content-center py-3">
+                <div class="col-4 text-center">
+                    <button class="btn btn-md btn-primary rounded-pill border-white qia-btn-primary">Vull saber-ne més</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Secció 5 -->
+<div class="container-fluid">
+    <!-- Onada -->
+    <div class="row">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <defs>
+                    <linearGradient id="wave" x1="0%" x2="100%" y1="0%" y2="0%">
+                      <stop offset="0%" stop-color="#ffffff" />
+                      <stop offset="100%" stop-color="#e8f0ff" />
+                    </linearGradient>
+                  </defs>
+                <path fill="url(#wave)" fill-opacity="1" d="M0,256L60,224C120,192,240,128,360,122.7C480,117,600,171,720,197.3C840,224,960,224,1080,197.3C1200,171,1320,117,1380,90.7L1440,64L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-4 pt-3 text-center">
+            <h2>Gràcies per visitar-nos</h2>
+            <p class="py-5">Tens algun dubte?<br>Escriu-nos a <a href="mailto:cdr.aquas@gencat.cat">cdr.aquas(at)gencat.cat</a><br>o visita'ns al web <a href="https://aquas.gencat.cat">https://aquas.gencat.cat</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Peu de pàgina -->
+<div class="container-fluid">
+    <!-- Xarxes socials -->
+    <div class="row justify-content-center py-2 qia-footer_social">
+        <div class="col-4 text-end">
+            <small>Segueix-nos a les xarxes socials AQuAS:</small>
+        </div>
+        <div class="col-4 text-start">
+            <ul class="qia-footer-social_icons">
+                <li><a href="https://mobile.twitter.com/AQuAScat" target="_blank"><img alt="Icona de Twitter" src="https://aquas.gencat.cat/web/resources/fwkResponsive/fpca_peu_xarxesSocials/img/twitter-c.svg"></a></li>
+                <li><a href="https://www.linkedin.com/company/aquas-salut/" target="_blank"><img alt="Icona de LinkedIn" src="https://aquas.gencat.cat/web/resources/fwkResponsive/fpca_peu_xarxesSocials/img/linkedin-c.svg"></a></li>
+                <li><a href="https://www.youtube.com/channel/UCLnTGcmpedzhLKkbIR-a0fw" target="_blank"><img alt="Icona de Youtube" src="https://aquas.gencat.cat/web/resources/fwkResponsive/fpca_peu_xarxesSocials/img/youtube-c.svg"></a></li>
+                <li><a href="https://blog.aquas.cat/" target="_blank"><img alt="Icona de Blog" src="https://aquas.gencat.cat/web/resources/fwkResponsive/fpca_peu_xarxesSocials/img/message-c.svg"></a></li>
+              </ul>        
+        </div>
+    </div>
+    <!-- Links legals -->
+    <div class="row py-2 qia-footer_content">
+        <div class="col-4 text-start">
+            <img src="idb_h_blanc.png" width="100px" alt="Logo Generalitat">
+        </div>
+        <div class="col-4 text-center">
+            <small>Agència de Qualitat i Avaluació Sanitàries de Catalunya, 2024</small>
+        </div>
+        <div class="col-4 text-end">
+            <a href="https://web.gencat.cat/ca/ajuda/avis_legal/" target="_blank" class="qia-footer_link">Avís legal</a>
+            <a href="https://web.gencat.cat/ca/ajuda/politica-de-galetes/" target="_blank" class="qia-footer_link">Política de galetes</a>
+        </div>
+    </div>
+</div>
+

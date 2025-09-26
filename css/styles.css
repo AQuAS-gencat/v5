@@ -1,0 +1,337 @@
+/* CSS styles used in the shiny app */
+  
+  /* 1. STYLING APPLICABLE TO WHOLE DASHBOARD ----------------------------*/
+  
+  
+  /* Add orange border to all links in dashboard when focused on*/
+  a:focus {
+    outline: 2px solid #FC8D59;
+  }
+
+
+
+
+
+
+/* to avoid red text error messages in the whole app*/
+  .shiny-output-error { visibility: hidden; }
+.shiny-output-error:before { visibility: hidden; }
+
+
+/* Style sidebars/well panels */
+  .well {background-color:#ffffff; border: 0 solid #7BACFC;
+      padding: 5px; box-shadow: none; }
+
+
+
+/* Ensure the navbar and brand align vertically */
+.navbar {
+  display: flex;
+  align-items: center; /* Vertically center all content in the navbar */
+}
+
+/* Center the logo and adjust its spacing */
+.navbar-brand {
+  display: flex;
+  align-items: center; /* Vertically center the logo inside the brand container */
+  justify-content: center; /* Horizontally center the logo */
+  padding: 0 !important; /* Remove extra padding if needed */
+  /* height: 60px; /* Adjust height to fit the navbar */
+}
+
+/* Adjust the logo image itself */
+.navbar-brand img {
+  /*max-height: 50px; /* Ensure the image doesn't exceed the navbar height */
+  margin: auto; /* Center the image horizontally */
+}
+
+/* Changes font to black in nav bar */
+  .navbar-default .navbar-nav > li > a {
+    color: #000000;
+      
+  }
+
+/* Changes colour of active (clicked) tab on the nav bar */
+  .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+    color: #ffffff;
+      background-color: #60A8F0;
+      
+  }
+
+/* Style the tab when hovered over */
+  .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #535353;
+      background-color: #BFDDFA;
+      
+  }
+
+/* Add orange border to tabs when focused on*/
+  .navbar-nav>.active>a:focus {
+    outline: 3px solid #FC8D59;
+  }
+
+
+/* Padding and margins of filters and labels*/
+  .form-group {margin: 3px !important}
+
+.li-custom {margin-bottom: 10px; !important} /* bullet point list items */
+  
+  .shiny-options-group { margin-top: 3px; !important}
+
+.selectize-control { margin-bottom: 3px !important}
+
+.selectize-input {
+  padding: 3px 3px !important; 
+  min-height: 15px !important; 
+  line-height: 25px !important;
+  color: black !important;
+}
+
+.selectize-dropdown {line-height: 25px; !important} /* ALTURA DELS ELEMENTS DEL SELECTOR */
+
+.control-label { 
+  margin-bottom: 1px !important;
+  color: black !important;
+}
+
+
+/*Style for canvia de centre buttons */
+  .torna_inici{ 
+    background-color:#888; 
+    border-color: #888;
+    color: white;
+    background-image:none; 
+    min-width: 13vh;  font-size: 14px; padding: 5px 10px; 
+    margin-top: 5px; margin-left: 3px;
+    border-radius: 60px;
+  }
+
+
+
+.qia-down {
+    background-color: #0073E6;
+    border-color: #0073E6;
+    color: white;
+    background-image: none;
+    min-width: 23vh;
+    font-size: 14px;
+    padding: 5px 10px;
+    margin-top: 5px;
+    margin-left: 3px;
+    border-radius: 20px;
+}
+      
+          /* Make buttons darker blue when user hovers over button*/ 
+      .qia-down:hover {
+        color: #fff;
+          background-color: #005597;
+          border-color: #005597;
+      }
+
+
+/* Larger button with centered text and no underline */
+.qia-down-pbi {
+    background-color: #0073E6;
+    border-color: #0073E6;
+    color: white;
+    text-decoration: none; /* Remove underline */
+    text-align: center; /* Center text */
+    display: inline-block; /* Ensure proper box model for button */
+    min-width: 25vh; /* Slightly larger width */
+    font-size: 16px; /* Slightly larger font */
+    padding: 10px 15px; /* More padding for larger button */
+    margin-top: 10px; /* Slightly larger margin */
+    margin-left: 5px;
+    border-radius: 25px; /* Keep rounded corners */
+    cursor: pointer; /* Pointer cursor for better UX */
+}
+
+/* Hover effect for larger button */
+.qia-down-pbi:hover {
+    color: #fff;
+    background-color: #005597;
+    border-color: #005597;
+}
+
+    /* AUGMENTEM L'AMPLADA DEL MODAL DE DEFINICIÓ */
+.modal-dialog {
+      width: 60% !important; /* Increase width to 80% of the viewport */
+      max-width: 60% !important; /* Limit max-width to 80% */
+    }
+    
+    
+    /* CSS for styling steps consistently (AFECTA PESTANYA EVOLUCIÓ TEMPORAL) */
+.step-text {
+  font-size: 16px !important;
+  font-weight: bold !important;
+  color: #333 !important;
+  margin-bottom: 10px !important;
+}
+
+
+/* Ensures indicator search bar on indicator definitions tab is left-aligned*/ 
+.rt-search {align-self:flex-start !important;
+            margin-left:18px !important;
+}
+
+
+/* Styling the content that is expanded when user clicks on row*/ 
+.rt-tr-details{
+  padding: 24px !important;
+  box-shadow: inset 0 1px 3px #dbdbdb !important;
+  background: hsl(213, 20%, 99%) !important;
+}
+
+
+/*  Caixes de la pàgina d'inici del visor */
+
+/* Style for the card button container */
+.card-button {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+/* Style for the button */
+.card-button button {
+  width: 100%;
+  padding: 30px;
+  font-size: 24px;
+  color: #8FC2F5;
+  background-color: #fff;  /* Default background color */
+  border: none;               /* No borders */
+  border-radius: 0px;          /* Square corners */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Style for the icon */
+.card-button button i {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+/* Style for the <p> text inside the button */
+.card-button button p {
+  font-size: 18px;
+  color: black;
+  margin-top: 10px;
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+/* Hover effect on the entire button */
+.card-button button:hover {
+  background-color: #eeeeee; /* Light gray on hover */
+}
+
+/* Hover effect for text within the button */
+.card-button button:hover p,
+.card-button button:hover span {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+
+.container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+ {
+    font-family: "Open Sans";
+}
+
+
+.accent {
+  color: #8FC2F5;
+  font-weight: bold;
+}
+
+.qia-gradient-1 {
+  background-image: linear-gradient(to right, #ffffff , #e8f0ff);
+}
+
+.qia-btn-primary {
+  background-color: #0073E6 !important;
+}
+ 
+ div.qia-item:hover {
+  background-color: #eeeeee;
+}
+
+
+a:hover.qia-btn-primary {
+  background-color: #005597 !important;
+}
+
+div.qia-centered {
+  text-align: center;
+}
+
+a.qia-ambit {
+  text-decoration: none;
+  color: black;
+}
+
+ul.qia-footer-social_icons li {
+  display: inline;
+}
+  
+a.qia-footer_link {
+  text-decoration: none;
+  color:#ffffff;
+}
+
+a:visited.qia-footer_link {
+  color:#ffffff;
+}
+
+a:hover.qia-footer_link {
+  text-decoration: underline;
+}  
+
+.qia-footer_content {
+  background-color: #333333;
+  color: #FFF !important;
+  font-size: 12px !important;
+}
+
+.qia-footer_social {
+  background-color: #F5F5F5;
+}
+
+
+.app-style-modal-content {
+    font-family: inherit; /* Ensure font matches the app's style */
+    color: inherit;       /* Match text color */
+    background-color: inherit; /* Match modal background */
+    padding: 1em;         /* Add padding if necessary */
+    line-height: inherit; /* Ensure consistent spacing */
+}
+
+/* Prevent unwanted style overrides */
+.app-style-modal-content h1, 
+.app-style-modal-content h2, 
+.app-style-modal-content p {
+    margin: 0;            /* Reset margins */
+    padding: 0;           /* Reset padding */
+}
+
+
+/* Featurettes
+------------------------- */
+
+.featurette-divider {
+  margin: 5rem 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* Thin out the marketing headings */
+/* rtl:begin:remove */
+.featurette-heading {
+  letter-spacing: -.05rem;
+}
+
+@media (min-width: 62em) {
+  .featurette-heading {
+    margin-top: 7rem;
+  }
+}

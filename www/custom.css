@@ -1,0 +1,56 @@
+/* * {
+    font-family: "Open Sans";
+}
+ */
+
+.qia-accent {
+  color: #7BACFC;
+  font-weight: bold;
+}
+
+.qia-gradient-1 {
+  background-image: linear-gradient(to right, #ffffff , #e8f0ff);
+}
+
+.qia-btn-primary {
+  background-color: #7BACFC !important;
+}
+
+div.qia-item:hover {
+  background-color: #eeeeee;
+}
+
+div.qia-centered {
+  text-align: center;
+}
+
+a.qia-ambit {
+  text-decoration: none;
+  color: black;
+}
+
+ul.qia-footer-social_icons li {
+  display: inline;
+}
+  
+a.qia-footer_link {
+  text-decoration: none;
+}
+
+a:visited.qia-footer_link {
+  color:#ffffff;
+}
+
+a:hover.qia-footer_link {
+  text-decoration: underline;
+}  
+
+.qia-footer_content {
+  background-color: #333333;
+  color: #FFF !important;
+  font-size: 11px !important;
+}
+
+.qia-footer_social {
+  background-color: #F5F5F5;
+}

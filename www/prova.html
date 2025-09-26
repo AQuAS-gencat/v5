@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>prova.knit</title>
+
+<script src="prova_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="prova_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="prova_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="prova_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="prova_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="prova_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="prova_files/navigation-1.1/tabsets.js"></script>
+<link href="prova_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="prova_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="prova_files/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
+<script src="prova_files/tabwid-1.1.3/tabwid.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="www/app.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<div id="índex-socioeconòmic-compost-isc-per-abs"
+class="section level2">
+<h2>Índex socioeconòmic compost (ISC) per ABS</h2>
+<p>L’índex socioeconòmic compost (ISC) de l’AQuAS és un índex de
+privació elaborat per àrea bàsica de salut (ABS) a partir d’una anàlisi
+de components principals de les següents variables:</p>
+<ul>
+<li>% de població desocupada (inclou inactiva)</li>
+<li>% de treballadors manuals</li>
+<li>% de persones amb estudis insuficients</li>
+<li>Nivell de renda (trams de l’indicador de copagament)</li>
+<li>% de població estrangera procedent de països de renda baixa</li>
+<li>% de gent gran que viu sola</li>
+<li>Taxa de mortalitat prematura</li>
+<li>Taxa d’hospitalització evitable per patologies associades a
+privació</li>
+</ul>
+<p>Els valors més alts de l’índex indiquen una major privació de l’ABS
+(pitjors condicions socioeconòmiques) i els valors més baixos, una menor
+privació (millors condicions socioeconòmiques).</p>
+<p>Per fer una anàlisi normalment considerem 4 grups d’ABS, tot i que a
+vegades fem servir la distribució en decils. Els punts que marquen cada
+grup s’estableixen pels punts d’inflexió de la corba:</p>
+<ul>
+<li>Privació baixa: ISC menor de 20</li>
+<li>Privació mitjana baixa: ISC entre 20 i 40</li>
+<li>Privació mitjana alta: ISC entre 40 i 60</li>
+<li>Privació molt alta: ISC superior a 60</li>
+</ul>
+<p><a
+href="https://blog.aquas.cat/wp-content/uploads/2017/04/Indicador-Socioecon%C3%B2mic-Compost-AQuAS.pdf">Per
+a més informació sobre l’índex, podeu consultar-ne la
+presentació</a></p>
+<p><br></p>
+</div>
+<div id="índex-socioeconòmic-territorial-ist-per-abs"
+class="section level2">
+<h2>Índex Socioeconòmic Territorial (IST) per ABS</h2>
+<p>l’índex socioeconòmic territorial (IST) és un índex sintètic que
+resumeix en un únic valor diverses característiques socioeconòmiques de
+la població, i que es defineix com una ponderació de sis indicadors de
+situació laboral, nivell d’estudis, immigració i renda:</p>
+<ul>
+<li>Població ocupada</li>
+<li>Treballadors de baixa qualificació</li>
+<li>Població amb estudis baixos</li>
+<li>Població jove sense estudis postobligatoris</li>
+<li>Estrangers de països de renda baixa o mitjana</li>
+<li>Renda mitjana per persona</li>
+</ul>
+<p>La metodologia utilitzada per al càlcul de l’IST és l’anàlisi de
+components principals a partir de les seccions censals, establint-se un
+valor de referència per a Catalunya igual a 100 i un valor per a cada
+unitat territorial en comparació amb el valor mitjà de Catalunya..</p>
+<p><a href="https://www.idescat.cat/pub/?id=ist">Per a més informació,
+l’Idescat actualitza anualment l’IST per agrupacions censals, municipis
+i comarques</a></p>
+<p><br></p>
+</div>
+<div id="criteris-per-definir-lentorn-ruralurbà" class="section level2">
+<h2>Criteris per definir l’entorn (rural/urbà)</h2>
+<div id="rural" class="section level3">
+<h3>Rural</h3>
+<p>&lt;7.500 habitants (En el centre més gran de l’EAP) i &lt;100
+habitants/km2 (En l’EAP)</p>
+</div>
+<div id="semirural" class="section level3">
+<h3>Semirural</h3>
+<p>&lt;7.500 habitants i &gt;100 habitants/ km<sup>2</sup> o bé
+&gt;7.500 habitants i &lt;100 habitants/ km<sup>2</sup></p>
+</div>
+<div id="semiurbà" class="section level3">
+<h3>Semiurbà</h3>
+<p>&gt;7.500 habitants i &gt;100 habitants/ km<sup>2</sup></p>
+</div>
+<div id="urbà" class="section level3">
+<h3>Urbà</h3>
+<p>&gt;10.000 habitants i &gt;150 habitants/ km<sup>2</sup></p>
+<div class="tabwid"><style>.cl-01aff10a{}.cl-01a3828a{font-family:'Arial';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-01a3829e{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-01a82060{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-01a83a82{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-01a83a83{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-01a83a8c{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-01a83a8d{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-01aff10a'><caption style="display:table-caption;margin:0pt;text-align:center;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;"><span>Distribució d'EAP per regió sanitària segons entorn (%)</span></caption><thead><tr style="overflow-wrap:break-word;"><th class="cl-01a83a82"><p class="cl-01a82060"><span class="cl-01a3828a">Regió</span></p></th><th class="cl-01a83a82"><p class="cl-01a82060"><span class="cl-01a3828a">Rurals</span></p></th><th class="cl-01a83a82"><p class="cl-01a82060"><span class="cl-01a3828a">Semirural</span></p></th><th class="cl-01a83a82"><p class="cl-01a82060"><span class="cl-01a3828a">Semiurbans</span></p></th><th class="cl-01a83a82"><p class="cl-01a82060"><span class="cl-01a3828a">Urbans</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-01a83a83"><p class="cl-01a82060"><span class="cl-01a3829e">Alt Pirineu i Aran</span></p></td><td class="cl-01a83a83"><p class="cl-01a82060"><span class="cl-01a3829e">63</span></p></td><td class="cl-01a83a83"><p class="cl-01a82060"><span class="cl-01a3829e">38</span></p></td><td class="cl-01a83a83"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a83"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Barcelona Ciutat</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">100</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Camp de Tarragona</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">18</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">21</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">12</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">48</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Catalunya Central</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">39</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">18</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">18</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">24</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Girona</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">22</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">20</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">27</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">32</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Lleida</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">33</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">29</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">4</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">33</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Metropolitana Nord</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">11</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">89</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Metropolitana Sud</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">3</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">2</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">6</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">89</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">Terres de l'Ebre</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">45</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">18</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e">36</span></p></td><td class="cl-01a83a8c"><p class="cl-01a82060"><span class="cl-01a3829e"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-01a83a8d"><p class="cl-01a82060"><span class="cl-01a3829e">Catalunya</span></p></td><td class="cl-01a83a8d"><p class="cl-01a82060"><span class="cl-01a3829e">12</span></p></td><td class="cl-01a83a8d"><p class="cl-01a82060"><span class="cl-01a3829e">9</span></p></td><td class="cl-01a83a8d"><p class="cl-01a82060"><span class="cl-01a3829e">10</span></p></td><td class="cl-01a83a8d"><p class="cl-01a82060"><span class="cl-01a3829e">68</span></p></td></tr></tbody></table></div>
+<p><br></p>
+</div>
+</div>
+<div id="classificació-dels-centres-hospitalaris-segons-nivell"
+class="section level2">
+<h2>Classificació dels centres hospitalaris segons nivell</h2>
+<p><br></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
