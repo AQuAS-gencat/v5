@@ -115,6 +115,7 @@ dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_c.parquet'"))
 
 dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_r.parquet'")) 
 
+dades_total <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'"))
 
 #dades_tbl = dades_tbl %>% 
 #  unique() #%>% 
@@ -236,22 +237,28 @@ map_rs2_layer <- sf::st_read("maps/rs2.geojson")
 
 
 
-ambits = dades_tbl %>% pull(ambit) %>%  unique()
+ambits = dades_total %>% pull(ambit) %>%  unique()
 
-dimensions = dades_tbl %>% pull(dimensio) %>%  unique()
+dimensions = dades_total %>% pull(dimensio) %>%  unique()
 
-indicadors = dades_tbl %>% pull(nom_indicador) %>%  unique() %>% sort()
+indicadors = dades_total %>% pull(nom_indicador) %>%  unique() %>% sort()
 
-anys = dades_tbl %>% pull(any) %>% unique()
+anys = dades_total %>% pull(any) %>% unique()
 
-nivell_geo = dades_tbl %>% pull(Granularitat) %>% unique()
+nivell_geo = dades_total %>% pull(Granularitat) %>% unique()
 
 #centre_territori = unique(dades$`Centre/Territori`)
 
-rs = dades_tbl %>% filter(Granularitat == "Regió Sanitària") %>% pull(`Centre/Territori`) %>% unique() 
-aga = dades_tbl %>% filter(Granularitat == "Àrea de Gestió Assistencial") %>% pull(`Centre/Territori`) %>% unique()
-abs = dades_tbl %>% filter(Granularitat == "Àrea Bàsica de Salut") %>% pull(`Centre/Territori`) %>% unique()
-centre = dades_tbl %>% filter(Granularitat == "Centre (Unitat proveïdora)") %>% pull(`Centre/Territori`) %>% unique()
+rs = dades_total %>% filter(Granularitat == "Regió Sanitària") %>% pull(`Centre/Territori`) %>% unique() 
+aga = dades_total %>% filter(Granularitat == "Àrea de Gestió Assistencial") %>% pull(`Centre/Territori`) %>% unique()
+abs = dades_total %>% filter(Granularitat == "Àrea Bàsica de Salut") %>% pull(`Centre/Territori`) %>% unique()
+centre = dades_total %>% filter(Granularitat == "Centre (Unitat proveïdora)") %>% pull(`Centre/Territori`) %>% unique()
+
+
+min_year <- dades_total %>% pull(any) %>% min()
+max_year <- dades_total %>% pull(any) %>% max()
+
+
 
 # Load and repair ABS layer
 #map_abs_layer <- sf::st_read("maps/abs.geojson") %>%

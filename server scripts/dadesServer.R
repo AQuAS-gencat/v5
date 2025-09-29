@@ -26,7 +26,7 @@ output$date_slider_ui <- renderUI({
 ## Reactive filters ----
 ###############################################.
 
-dades_download = dades_tbl
+dades_download = dades_total
 #to clear choices when boxes are unticked/radio button is changed
 
 observeEvent(input$rs=="FALSE", {#for RSs
@@ -105,124 +105,136 @@ observeEvent(input$clear, {
 ###############################################.
 ## Reactive data ----
 ###############################################.
+
 filter_table <- reactive ({
+  
+  # Convert input values to variables that DuckDB can understand
+  date_start <- as.numeric(input$date_from[1])
+  date_end <- as.numeric(input$date_from[2])
+  
   if (is.null(input$indicator_filter) & is.null(input$ambit_filter) & is.null(input$dimensio_filter)) {
     # if no data selected create empty dataset to avoid app crashing
-    table <- data.frame(ambit = factor(), dimensio = factor(), codi_indicador = factor(), `Centre/Territori` = factor(), 
+    table <- data.frame(ambit = factor(), dimensio = factor(), `Centre/Territori` = factor(), 
                         Granularitat = factor(), nom_indicador = factor(), 
                         any = double(), 
-                        #n =double(), d =double(), 
-                        r =double(), mitjana=double(), unitats = double(), invers = double())
+                        sexe = factor(), grup_edat = factor(), 
+                        r = double(), mitjana=double(), unitats = character())
     
     #if list of indicators selected
   } else {
     if (!is.null(input$indicator_filter)) { #if indicator selected
       if (input$all_geo == TRUE) {
         
-        
-        filtered_geos <- dades_tbl %>%  
-          filter(any>=input$date_from[1] & any<=input$date_from[2] & 
-                   nom_indicador %in% input$indicator_filter)
-        
+        filtered_geos <- dades_total %>%  
+          filter(any >= !!date_start & any <= !!date_end & 
+                   nom_indicador %in% !!input$indicator_filter)
         
       } else {
         
-        filtered_geo <- dades_tbl %>% 
+        filtered_geo <- dades_total %>% 
           filter(
-            (`Centre/Territori` %in% input$rs_true & Granularitat == "Regió Sanitària")|
-              (`Centre/Territori` %in% input$aga_true & Granularitat == "Àrea de Gestió Sanitària")|
-              (`Centre/Territori` %in% input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
-              (`Centre/Territori` %in% input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
-          filter(any>=input$date_from[1] & any<=input$date_from[2] & 
-                   nom_indicador %in% input$indicator_filter)
+            (`Centre/Territori` %in% !!input$rs_true & Granularitat == "Regió Sanitària")|
+              (`Centre/Territori` %in% !!input$aga_true & Granularitat == "Àrea de Gestió Assistencial")|
+              (`Centre/Territori` %in% !!input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
+              (`Centre/Territori` %in% !!input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
+          filter(any >= !!date_start & any <= !!date_end & 
+                   nom_indicador %in% !!input$indicator_filter)
         
         filtered_geo2 <- if (input$catalunya == TRUE) {
-          dades_tbl %>% filter(`Centre/Territori` == "Catalunya" &
-                             (any>=input$date_from[1] & any<=input$date_from[2]) &
-                             nom_indicador %in% input$indicator_filter)
-          
-        }      
+          dades_total %>% filter(`Centre/Territori` == "Catalunya" &
+                                   any >= !!date_start & any <= !!date_end &
+                                   nom_indicador %in% !!input$indicator_filter)
+        } else {
+          NULL
+        }
         
-        filtered_geos <- rbind(filtered_geo, filtered_geo2)
-        
+        if (!is.null(filtered_geo2)) {
+          filtered_geos <- union_all(filtered_geo, filtered_geo2)
+        } else {
+          filtered_geos <- filtered_geo
+        }
       }
       
       #if list of ambits selected
-      
     } else if (!is.null(input$ambit_filter)) { 
       
       if (input$all_geo == TRUE) {
         
-        filtered_geos <- dades_tbl %>%  
-          filter(any>=input$date_from[1] & any<=input$date_from[2] & 
-                   ambit %in% input$ambit_filter)
+        filtered_geos <- dades_total %>%  
+          filter(any >= !!date_start & any <= !!date_end & 
+                   ambit %in% !!input$ambit_filter)
         
       } else {
         
-        filtered_geo <- dades_tbl %>% 
+        filtered_geo <- dades_total %>% 
           filter(
-            (`Centre/Territori` %in% input$rs_true & Granularitat == "Regió Sanitària")|
-              (`Centre/Territori` %in% input$aga_true & Granularitat == "Àrea de Gestió Sanitària")|
-              (`Centre/Territori` %in% input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
-              (`Centre/Territori` %in% input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
-          filter(any>=input$date_from[1] & any<=input$date_from[2] &
-                   ambit %in% input$ambit_filter)
+            (`Centre/Territori` %in% !!input$rs_true & Granularitat == "Regió Sanitària")|
+              (`Centre/Territori` %in% !!input$aga_true & Granularitat == "Àrea de Gestió Assistencial")|
+              (`Centre/Territori` %in% !!input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
+              (`Centre/Territori` %in% !!input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
+          filter(any >= !!date_start & any <= !!date_end &
+                   ambit %in% !!input$ambit_filter)
         
         filtered_geo2 <- if (input$catalunya == TRUE) {
-          dades_tbl %>% 
+          dades_total %>% 
             filter(`Centre/Territori` == "Catalunya" &
-                     any>=input$date_from[1] & any<=input$date_from[2] &
-                     ambit %in% input$ambit_filter)
-          
+                     any >= !!date_start & any <= !!date_end &
+                     ambit %in% !!input$ambit_filter)
+        } else {
+          NULL
         }
-        # Merging together Scotland and other areas selected
-        filtered_geos <- rbind(filtered_geo,filtered_geo2)
         
+        if (!is.null(filtered_geo2)) {
+          filtered_geos <- union_all(filtered_geo, filtered_geo2)
+        } else {
+          filtered_geos <- filtered_geo
+        }
       }
       
+    } else { #dimensio filter
       
-      
-    } else { #ending the profile selection bit
-      
-      # if all available geographies checkbox checked
       if (input$all_geo == TRUE) {
         
-        filtered_geos <- dades_tbl %>%  
-          filter(any>=input$date_from[1] & any<=input$date_from[2])
+        filtered_geos <- dades_total %>%  
+          filter(any >= !!date_start & any <= !!date_end &
+                   dimensio %in% !!input$dimensio_filter)
         
       } else {
         
-        filtered_geo <- dades_tbl %>% 
-          filter((`Centre/Territori` %in% input$rs_true & Granularitat == "Regió Sanitària")|
-                   (`Centre/Territori` %in% input$aga_true & Granularitat == "Àrea de Gestió Sanitària")|
-                   (`Centre/Territori` %in% input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
-                   (`Centre/Territori` %in% input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
-          filter(any>=input$date_from[1] & any<=input$date_from[2])
+        filtered_geo <- dades_total %>% 
+          filter((`Centre/Territori` %in% !!input$rs_true & Granularitat == "Regió Sanitària")|
+                   (`Centre/Territori` %in% !!input$aga_true & Granularitat == "Àrea de Gestió Assistencial")|
+                   (`Centre/Territori` %in% !!input$abs_true & Granularitat == "Àrea Bàsica de Salut")|
+                   (`Centre/Territori` %in% !!input$centre_true & Granularitat == "Centre (Unitat proveïdora)")) %>% 
+          filter(any >= !!date_start & any <= !!date_end &
+                   dimensio %in% !!input$dimensio_filter)
         
         filtered_geo2 <- if (input$catalunya == TRUE) {
-          dades_tbl %>% 
+          dades_total %>% 
             filter(`Centre/Territori` == "Catalunya" &
-                     any>=input$date_from[1] & any<=input$date_from[2])
-          
+                     any >= !!date_start & any <= !!date_end &
+                     dimensio %in% !!input$dimensio_filter)
+        } else {
+          NULL
         }
-        # Merging together Scotland and other areas selected
-        filtered_geos <- rbind(filtered_geo,filtered_geo2)
         
+        if (!is.null(filtered_geo2)) {
+          filtered_geos <- union_all(filtered_geo, filtered_geo2)
+        } else {
+          filtered_geos <- filtered_geo
+        }
       } 
-      
-    } #end of the else if statement for all available geographies
+    }
     
-    table <- filtered_geos %>% select(ambit, dimensio, `Centre/Territori`, Granularitat, nom_indicador, sexe, grup_edat, any, 
-                                      #n, 
-                                      #d, 
-                                      r, mitjana, unitats
-                                      #, invers
-    )
-  } #end of the whole if statement (if users have selected any data)
+    # Convert to data frame with collect() and select the columns
+    table <- filtered_geos %>% 
+      select(ambit, dimensio, `Centre/Territori`, Granularitat, nom_indicador, 
+             sexe, grup_edat, any, r, mitjana, unitats) %>%
+      collect()
+    
+  }
   
-  
-  #  print(table)
-  
+  return(table)
 })
 
 
@@ -231,41 +243,72 @@ filter_table <- reactive ({
 ## Table ----
 ###############################################.
 
-#display table based on selection made by user on indicator tab
-output$table_filtered <- renderReactable({
+###############################################.
+## Table ----
+###############################################.
+
+# Display table using DT instead of reactable
+# Display table using DT instead of reactable
+###############################################.
+## Table ----
+###############################################.
+
+# Display table using DT with column visibility controls
+output$table_filtered <- renderDT({
   
-  reactable(
+  datatable(
     filter_table(),
-    #searchable = TRUE,  # Enables global search
-    filterable = TRUE,  # Enables column-specific filtering
-    defaultPageSize = 25,  # Number of rows per page
-    striped = TRUE,             # Adds row stripes
-    bordered = TRUE,            # Adds borders to cells
-    highlight = TRUE,           # Highlights rows when hovered
-    columns = list(
-      "ambit" = colDef(name = "Àmbit", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "dimensio" = colDef(name = "Dimensió", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "Centre/Territori" = colDef(name = "Centre/Territori", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "Granularitat" = colDef(name = "Granularitat", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "nom_indicador" = colDef(name = "Indicador", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "sexe" = colDef(name = "Sexe", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "grup_edat" = colDef(name = "Grup d'edat", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "any" = colDef(name = "Any", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      #"n" = colDef(name = "Numerador", filterable = TRUE),
-      #"d" = colDef(name = "Denominador", filterable = TRUE),
-      "r" = colDef(name = "Resultat", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "mitjana" = colDef(name = "Catalunya", filterable = TRUE, headerStyle = list(textAlign = "center")),
-      "unitats" = colDef(name = "Mesura", filterable = TRUE, headerStyle = list(textAlign = "center"))#,
-      #"invers" = colDef(name = "Invers", filterable = TRUE, headerStyle = list(textAlign = "center"))
+    filter = 'top',  # Enables column-specific filtering at the top
+    rownames = FALSE,
+    extensions = 'Buttons',  # Add Buttons extension
+    options = list(
+      pageLength = 25,  # Number of rows per page
+      scrollX = TRUE,   # Enable horizontal scrolling
+      autoWidth = TRUE,
+      # Configure buttons including column visibility
+      dom = 'Bfrtip',  # B = buttons, f = filter, r = processing, t = table, i = info, p = pagination
+      buttons = list(
+        list(
+          extend = 'colvis',
+          text = 'Mostra/amaga columnes',
+          columns = ':visible'  # Apply to all visible columns
+        ),
+        list(
+          extend = 'csv',
+          text = 'Descarrega CSV',
+          filename = 'dades_filtrades'
+        )
+      ),
+      language = list(
+        info = "Mostrant _START_ a _END_ de _TOTAL_ files",
+        paginate = list(previous = "Anterior", `next` = "Següent"),
+        search = "Cerca:",
+        lengthMenu = "Mostra _MENU_ files",
+        zeroRecords = "La selecció actual no permet mostrar cap dada. Recorda seleccionar quelcom al Pas 1 i Pas 2 per poder veure la taula.",
+        buttons = list(
+          colvis = "Columnes",
+          colvisRestore = "Restaura columnes"
+        )
+      )
     ),
-    language = reactableLang(
-      noData = "La selecció actual no permet mostrar cap dada. Recorda seleccionar quelcom al Pas 1 i Pas 2 per poder veure la taula.",
-      pageInfo = "{rowStart}\u2013{rowEnd} de {rows} files", # text to display in table footer
-      pagePrevious = "Anterior",
-      pageNext = "Següent",
-    )
+    colnames = c(
+      "Àmbit", 
+      "Dimensió", 
+      "Centre/Territori", 
+      "Granularitat", 
+      "Indicador", 
+      "Sexe", 
+      "Grup d'edat", 
+      "Any", 
+      "Resultat", 
+      "Catalunya", 
+      "Mesura"
+    ),
+    class = 'cell-border stripe hover'  # Styling classes
   )
+  
 })
+
 
 #print(filter_table())
 
@@ -285,16 +328,17 @@ output$download_table_excel <- downloadHandler(
       select(
         ambit,
         dimensio,
-        centre_territori,
-        granularitat,
-        indicador,
-        subcategoria,
+        `Centre/Territori`,
+        Granularitat,
+        nom_indicador,
         sexe,
+        grup_edat,
         any,
-        resultat,
-        catalunya,
-        unitat
+        r,
+        mitjana,
+        unitats
       )
+    
     
     # Write to Excel
     writexl::write_xlsx(data_to_download_seleccio, path = file)

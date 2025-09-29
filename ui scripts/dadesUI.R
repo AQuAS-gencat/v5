@@ -4,125 +4,135 @@
 #
 ###############################################
 
-
-descarreguesTab <- 
+descarreguesTab <- nav_panel(
+  title = "Dades",  # Simplified title without icon
+  value = "dades",
   
-  tabPanel(
-    #div(
-    #div(role = "navigation"),
-    #"Dades"),
-    title = "Dades",
-    value = "dades",
-    #Sidepanel for filtering data
-    mainPanel(
-      width = 12, style="margin-left:0.5%; margin-right:0.5%",
-      #Row 1 for intro  
-      fluidRow(
-        h2("Explora les dades de la plataforma en format taula i descarrega-les", 
-           style = "font-weight: bold;"),
-        br(),
-        column(4,
-               div(
-                 p(style = "font-size: 14px; padding: 10px; background-color: #FFE7CE; border-left: 5px solid #FFA500; margin-bottom: 15px;", 
-                   'Fes servir els filtres de sota per triar les dades que vulguis previsualitzar.'),
-               ),
+  
+  div(style = "margin:10px;",
+      
+      # Main Layout: Sidebar on Left, Main Content on Right
+      layout_sidebar(
+        fillable = F,
+        
+        sidebar = sidebar(
+          width = '25%',
+          
+          accordion(
+            
+            multiple = TRUE,  # allows multiple panels to stay open
+            open = c("que_panel_dades", "geo_panel_dades", "interval_panel_dades"),
+            
+            accordion_panel(
+              value = "que_panel_dades",
+              "Pas 1: Selecciona els indicadors o àmbits que vulguis mostrar a la taula",
+              awesomeRadio("product_filter", label=NULL, choices = c("Indicador", "Àmbit", "Dimensió"), selected = NULL, inline = FALSE,
+                           status = "primary", checkbox = TRUE),
+              conditionalPanel(condition="input.product_filter=='Indicador'",
+                               selectizeInput("indicator_filter", label = NULL,
+                                              choices = indicadors, selected = NULL,
+                                              multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu indicadors"))
+                               
+              ),
+              conditionalPanel(condition="input.product_filter=='Àmbit'",
+                               selectizeInput("ambit_filter", label = NULL,
+                                              choices = ambits, selected = NULL,
+                                              multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu àmbits"))    
+              ),
+              conditionalPanel(condition="input.product_filter=='Dimensió'",
+                               selectizeInput("dimensio_filter", label = NULL,
+                                              choices = dimensions, selected = NULL,
+                                              multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu dimensions"))    
+              )
+            ),
+            
+            accordion_panel(
+              value = "geo_panel_dades",
+              "Pas 2: Selecciona les unitats geogràfiques d'anàlisi",
+              awesomeCheckbox("catalunya",label = "Catalunya", value = FALSE),
+              # Panel for RS selections
+              awesomeCheckbox("rs",label = "Regió Sanitària", value = FALSE),
+              conditionalPanel(
+                condition = "input.rs == true",
+                selectizeInput("rs_true", label = NULL,
+                               choices = rs, selected = NULL, multiple=TRUE),
+                options = list(placeholder = "Selecciona o escriu les regions sanitàries que vulguis mostrar")),
+              # Panel for AGA selections
+              awesomeCheckbox("aga", label = "Àrea de Gestió Assistencial", value = FALSE),
+              conditionalPanel(
+                condition = "input.aga == true",
+                selectizeInput("aga_true", label = NULL,
+                               choices = aga, selected = NULL, multiple=TRUE, 
+                               options = list(placeholder = "Selecciona o escriu les AGA que vulguis mostrar"))),
+              # Panel for ABS selections
+              awesomeCheckbox("abs",label = "Àrea Bàsica de Salut", value = FALSE),
+              conditionalPanel(
+                condition = "input.abs == true",
+                selectizeInput("abs_true", label = NULL,
+                               choices = abs, selected = NULL, multiple=TRUE,
+                               options = list(placeholder = "Selecciona o escriu les ABS que vulguis mostrar"))),
+              # Panel for centre selections
+              awesomeCheckbox("centre",label = "Centre (Unitat proveïdora)", value = FALSE),
+              conditionalPanel(
+                condition = "input.centre == true",
+                selectizeInput("centre_true", label = NULL, choices = centre, 
+                               selected = NULL, multiple=TRUE)),
+              # To select all available geographies
+              awesomeCheckbox("all_geo",label = "Tots els nivells geogràfics disponibles", value = FALSE)
+            ),
+            
+            accordion_panel(
+              value = "interval_panel_dades",
+              "Si ho vols, selecciona un període temporal concret",
+              #sliderInput(
+              #  inputId = "year_range_estrat",
+              #  label = NULL,
+              #  #label = "Tria un interval:",
+              #  #shiny::HTML("<p class='step-text'>Tria un interval</p>"), 
+              #  min = 2016,  # Placeholder value
+              #  max = 2024,  # Placeholder value
+              #  value = c(2016, 2024),  # Placeholder value
+              #  step = 1,
+              #  ticks = F,
+              #  sep = ""
+              #),
+              uiOutput("date_slider_ui")
+            )
+            
+          ),
+          
+          actionLink(
+            inputId = "clear",
+            label = HTML('<i class="fas fa-eraser"></i> Esborra tots els filtres'),
+          ),
+          actionLink(
+            inputId = "download_table_excel",
+            label = "Descarrega la taula filtrada",
+          ),
+          actionLink(
+            inputId = "download_all_csv",
+            label = "Descarrega la base dades completa",
+          )
+          
+          #br(),
+          
         ),
-        column(8),
-        
-        br()
-      ),
-      #Row 2 for selections
-      fluidRow(
-        column(3,
-               p("Pas 1: Selecciona els indicadors o àmbits que vulguis mostrar a la taula", style = "font-weight: bold; color: black;"),  
-               #               div("All available indicators will be displayed for
-               #                 selected geography if none specified"),
-               awesomeRadio("product_filter", label=NULL, choices = c("Indicador", "Àmbit", "Dimensió"), selected = NULL, inline = FALSE,
-                            status = "primary", checkbox = TRUE),
-               conditionalPanel(condition="input.product_filter=='Indicador'",
-                                selectizeInput("indicator_filter", label = NULL,
-                                               choices = indicadors, selected = NULL,
-                                               multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu indicadors"))
-                                
-               ),
-               conditionalPanel(condition="input.product_filter=='Àmbit'",
-                                selectizeInput("ambit_filter", label = NULL,
-                                               choices = ambits, selected = NULL,
-                                               multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu àmbits"))    
-               ),
-               conditionalPanel(condition="input.product_filter=='Dimensió'",
-                                selectizeInput("dimensio_filter", label = NULL,
-                                               choices = dimensions, selected = NULL,
-                                               multiple=TRUE, options = list(maxOptions = 1000, placeholder = "Selecciona o escriu dimensions"))    
-               )
-        ),# column bracket
         
         
+        fluidRow(  
+          br(),
+          column(12, div(DTOutput("table_filtered"), 
+                         style = "font-size: 98%; width: 98%"))
+        )
+        
+
         
         
-        column(3,
-               p("Pas 2: Selecciona les unitats geogràfiques d'anàlisi", style = "font-weight: bold; color: black;"),
-               # Catalunya selections
-               awesomeCheckbox("catalunya",label = "Catalunya", value = FALSE),
-               # Panel for RS selections
-               awesomeCheckbox("rs",label = "Regió Sanitària", value = FALSE),
-               conditionalPanel(
-                 condition = "input.rs == true",
-                 selectizeInput("rs_true", label = NULL,
-                                choices = rs, selected = NULL, multiple=TRUE),
-                 options = list(placeholder = "Selecciona o escriu les regions sanitàries que vulguis mostrar")),
-               # Panel for AGA selections
-               awesomeCheckbox("aga", label = "Àrea de Gestió Assistencial", value = FALSE),
-               conditionalPanel(
-                 condition = "input.aga == true",
-                 selectizeInput("aga_true", label = NULL,
-                                choices = aga, selected = NULL, multiple=TRUE, 
-                                options = list(placeholder = "Selecciona o escriu les AGA que vulguis mostrar"))),
-               # Panel for ABS selections
-               awesomeCheckbox("abs",label = "Àrea Bàsica de Salut", value = FALSE),
-               conditionalPanel(
-                 condition = "input.abs == true",
-                 selectizeInput("abs_true", label = NULL,
-                                choices = abs, selected = NULL, multiple=TRUE,
-                                options = list(placeholder = "Selecciona o escriu les ABS que vulguis mostrar"))),
-               # Panel for centre selections
-               awesomeCheckbox("centre",label = "Centre (Unitat proveïdora)", value = FALSE),
-               conditionalPanel(
-                 condition = "input.centre == true",
-                 selectizeInput("centre_true", label = NULL, choices = centre, 
-                                selected = NULL, multiple=TRUE)),
-               # To select all available geographies
-               awesomeCheckbox("all_geo",label = "Tots els nivells geogràfics disponibles", value = FALSE)
-               
-               
-        ), # column bracket
-        column(3,
-               p("Si ho vols, selecciona un període temporal concret", style = "font-weight: bold; color: black;"),
-               uiOutput("date_slider_ui")
-               #sliderInput("date_from",label = NULL, min = min_year, 
-               #             max = max_year, value = c(min_year,max_year), 
-               #             step = 1, sep="", round = TRUE, 
-               #             ticks = TRUE, dragRange = FALSE)
-               
-               
-        ), #column bracket
-        column(3, style = "width:20%",
-               br(),
-               div(title = "Esborra tots els filtres",
-                   actionButton("clear", label = "Esborra tots els filtres",  icon ("eraser"), class = "qia-down")),
-               div(title = "Descarrega la taula en format Excel",
-                   downloadButton("download_table_excel", 'Descarrega la taula filtrada', class = "qia-down")),
-               div(title = "Descarrega la base de dades completa en format CSV (excedeix el nombre màxim de columnes permeses en Excel, de manera que s'aconsella obrir-lo amb programari específic d'anàlisi de dades)",
-                   downloadButton("download_all_csv", 'Descarrega la base dades completa', class = "qia-down")),
-               br()
-               
-        ) #column bracket
-      ), #filters fluid row bracket
-      #Row 3- Table
-      fluidRow(  
-        br(),
-        column(12, div(reactableOutput("table_filtered"), 
-                       style = "font-size: 98%; width: 98%"))
       )
-    ) # main panel bracket
-  ) #Tab panel bracket
+      
+      
+  )
+  
+  
+)
+
