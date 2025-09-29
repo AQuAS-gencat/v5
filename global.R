@@ -103,11 +103,18 @@ alfred <- collect(open_dataset("datasets/alfred", format = "parquet")) %>%
 
 
 #dbWriteTable(con, "dades_c", read_parquet("datasets/df_dades_c.parquet"))
-dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'")) %>% 
-  filter(visio != "P")
 
-dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'")) %>% 
-  filter(visio != "C")
+#dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'")) %>% 
+#  filter(visio != "P")
+
+#dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'")) %>% 
+#  filter(visio != "C")
+
+
+dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_c.parquet'")) 
+
+dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_r.parquet'")) 
+
 
 #dades_tbl = dades_tbl %>% 
 #  unique() #%>% 
@@ -227,6 +234,24 @@ map_rs_layer <- sf::st_read("maps/rs.geojson")
 
 map_rs2_layer <- sf::st_read("maps/rs2.geojson") 
 
+
+
+ambits = dades_tbl %>% pull(ambit) %>%  unique()
+
+dimensions = dades_tbl %>% pull(dimensio) %>%  unique()
+
+indicadors = dades_tbl %>% pull(nom_indicador) %>%  unique() %>% sort()
+
+anys = dades_tbl %>% pull(any) %>% unique()
+
+nivell_geo = dades_tbl %>% pull(Granularitat) %>% unique()
+
+#centre_territori = unique(dades$`Centre/Territori`)
+
+rs = dades_tbl %>% filter(Granularitat == "Regió Sanitària") %>% pull(`Centre/Territori`) %>% unique() 
+aga = dades_tbl %>% filter(Granularitat == "Àrea de Gestió Assistencial") %>% pull(`Centre/Territori`) %>% unique()
+abs = dades_tbl %>% filter(Granularitat == "Àrea Bàsica de Salut") %>% pull(`Centre/Territori`) %>% unique()
+centre = dades_tbl %>% filter(Granularitat == "Centre (Unitat proveïdora)") %>% pull(`Centre/Territori`) %>% unique()
 
 # Load and repair ABS layer
 #map_abs_layer <- sf::st_read("maps/abs.geojson") %>%

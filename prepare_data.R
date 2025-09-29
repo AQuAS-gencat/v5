@@ -169,6 +169,50 @@ my_df = my_df %>%
   arrange(ambit)
 
 
+# Visió C
+
+c = my_df %>% 
+  filter(visio != "P")
+
+cat_values = c %>% 
+  ungroup() %>% 
+  filter(Granularitat == "Catalunya") %>%
+  select(c(codi_indicador, any, grup_edat, sexe, r)) %>%
+  distinct(codi_indicador, any, grup_edat, sexe, .keep_all = TRUE)  # Ensure there's only one row per id_indicator and year
+
+
+df = c %>% 
+  left_join(cat_values, by = c("codi_indicador", "any", "grup_edat", "sexe")) %>% 
+  rename(r = r.x, mitjana = r.y) %>%
+  unique()
+
+
+# Save back to parquet
+write_parquet(df, "datasets/dades/dades_c.parquet")
+
+
+# Visió P
+
+p = my_df %>% 
+  filter(visio != "C")
+
+cat_values = p %>% 
+  ungroup() %>% 
+  filter(Granularitat == "Catalunya") %>%
+  select(c(codi_indicador, any, grup_edat, sexe, r)) %>%
+  distinct(codi_indicador, any, grup_edat, sexe, .keep_all = TRUE)  # Ensure there's only one row per id_indicator and year
+
+
+df = p %>% 
+  left_join(cat_values, by = c("codi_indicador", "any", "grup_edat", "sexe")) %>% 
+  rename(r = r.x, mitjana = r.y) %>%
+  unique()
+
+
+# Save back to parquet
+write_parquet(df, "datasets/dades/dades_r.parquet")
+
+
 cat_values = my_df %>% 
   ungroup() %>% 
   filter(Granularitat == "Catalunya") %>%
@@ -239,7 +283,8 @@ df_query <- dataset %>%
                                                                  if_else(`Centre/Territori` == "CATALUNYA CENTRAL" & Granularitat == "Regió Sanitària", "Catalunya Central",
                                                                          if_else(`Centre/Territori` == "LLEIDA" & Granularitat == "Regió Sanitària", "Lleida",
                                                                                  if_else(`Centre/Territori` == "GIRONA" & Granularitat == "Regió Sanitària", "Girona",
-                                                                                         if_else(`Centre/Territori` == "TERRES DE L'EBRE" & Granularitat == "Regió Sanitària", "Terres de l'Ebre", `Centre/Territori`)))))))
+                                                                                         if_else(`Centre/Territori` == "TERRES DE L'EBRE" & Granularitat == "Regió Sanitària", "Terres de l'Ebre", 
+                                                                                                 if_else(`Centre/Territori` == "PENEDÈS" & Granularitat == "Regió Sanitària", "Penedès", `Centre/Territori`))))))))
                                  ))
   ) %>%
   filter(!(any %in% c("2014", "2015", "2016", "2025")),
