@@ -631,7 +631,7 @@ selected_data <- reactive({
   if (use_standardized) {
     selected <- selected %>% 
       filter(sexe == "Total", grup_edat == "Total") %>% 
-      mutate(ic = paste0("[", round(ic_inf, 1), " - ", round(ic_sup, 1), "]"))
+      mutate(ic = paste0("[", round(ic_inf, 2), " - ", round(ic_sup, 2), "]"))
   } else {
     # Use safe defaults for selector values
     sexe_value <- if (!is.null(input$selector_sexe_evolutiu) && length(input$selector_sexe_evolutiu) > 0) {
@@ -829,7 +829,7 @@ combined_data <- reactive({
     if (use_standardized) {
       other_data <- other_data %>% 
         filter(sexe == "Total", grup_edat == "Total") %>% 
-        mutate(ic = paste0("[", round(ic_inf, 1), " - ", round(ic_sup, 1), "]"))
+        mutate(ic = paste0("[", round(ic_inf, 2), " - ", round(ic_sup, 2), "]"))
     } else {
       # Use safe defaults for selector values
       sexe_value <- if (!is.null(input$selector_sexe_evolutiu) && length(input$selector_sexe_evolutiu) > 0) {

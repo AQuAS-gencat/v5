@@ -61,6 +61,8 @@ analisiTab <- nav_panel(
             div(title = "Selecciona un indicador per poder-ne comparar els resultats.",
                 uiOutput("select_indicador_analisi_ui")),
             
+            br(),
+            
             actionLink(
               inputId = "ajuda_analisi", 
               label = HTML('<i class="fas fa-info-circle"></i> Ajuda')

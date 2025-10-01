@@ -120,7 +120,7 @@ ambit_icon <- function(value) {
 trend_indicator <- function(value = c("unchanged", "up", "down", "betterup", "betterdown", "worseup", "worsedown", "new")) {
   value <- match.arg(value)
   label <- switch(value,
-                  unchanged = "Es manté igual que el darrer any o amb un canvi inferior a l'1%", up = "Augmenta respecte el darrer any",
+                  unchanged = "Es manté igual que el darrer any o amb un canvi inferior al 5%", up = "Augmenta respecte el darrer any",
                   down = "Disminueix respecte el darrer any", betterup = "Millora respecte el darrer any", betterdown = "Millora respecte el darrer any", 
                   worseup = "Empitjora respecte el darrer any", worsedown = "Empitjora respecte al darrer any", new = "Indicador sense dades prèvies")
   

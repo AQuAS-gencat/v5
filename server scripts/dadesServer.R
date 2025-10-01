@@ -272,12 +272,12 @@ output$table_filtered <- renderDT({
           extend = 'colvis',
           text = 'Mostra/amaga columnes',
           columns = ':visible'  # Apply to all visible columns
-        ),
-        list(
-          extend = 'csv',
-          text = 'Descarrega CSV',
-          filename = 'dades_filtrades'
-        )
+        )#,
+        #list(
+        #  extend = 'csv',
+        #  text = 'Descarrega CSV',
+        #  filename = 'dades_filtrades'
+        #)
       ),
       language = list(
         info = "Mostrant _START_ a _END_ de _TOTAL_ files",

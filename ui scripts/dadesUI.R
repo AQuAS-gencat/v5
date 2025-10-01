@@ -107,7 +107,7 @@ descarreguesTab <- nav_panel(
           ),
           actionLink(
             inputId = "download_table_excel",
-            label = "Descarrega la taula filtrada",
+            label = "Descarrega la taula",
           ),
           actionLink(
             inputId = "download_all_csv",

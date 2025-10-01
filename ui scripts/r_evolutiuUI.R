@@ -38,7 +38,7 @@ revolutiuTab <- nav_panel(
                 max = 2024,
                 value = c(2016, 2024),
                 step = 1,
-                ticks = F,
+                ticks = T,
                 sep = ""
               ),
             ),

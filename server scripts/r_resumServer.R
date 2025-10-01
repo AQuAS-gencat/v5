@@ -156,7 +156,7 @@ r_summary_data <- reactive({
     final <- final %>%
       select(
         ambit, ambit_curt, dimensio, codi_indicador, 
-        nom_indicador, any, r, ic, trend_icona, Granularitat, `Centre/Territori`,
+        nom_indicador, any, oe, ic, trend_icona, Granularitat, `Centre/Territori`,
         row_number, spine_chart, Q100, Q75, Q25, Q0, q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
       )
   } else {
@@ -918,17 +918,25 @@ output$r_taula_resum <- renderUI({
       #   }),
       
       
-      # Chosen area column -------
-      r = colDef(
+      # Resultat cru column column -------
+      r = if(!is_standardized) colDef(
         maxWidth = 100,
         filterable = T,
         align = "center",
-        name = if(!is_standardized) "Resultat" else "Raó O/E",
-        #name = selected_values$center,
+        name = "Resultat",
         cell = function(value){
           div(style = "margin-top: 10px; margin-bottom: 5px;", value)
-        }),
+        }) else NULL,
       
+      # OE column -------
+      oe = if(is_standardized) colDef(
+        maxWidth = 100,
+        filterable = T,
+        align = "center",
+        name = "Raó O/E",
+        cell = function(value){
+          div(style = "margin-top: 10px; margin-bottom: 5px;", value)
+        }) else NULL,
       
       
       # Catalunya column -------

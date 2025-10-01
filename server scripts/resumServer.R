@@ -138,7 +138,7 @@ summary_data <- reactive({
     mutate(
       # normalise based on scale_min/scale_max
       across(c(chosen_value, q0, q25, q75, q100), ~ (. - scale_min) / (scale_max - scale_min)),
-      ic = paste0("[", round(ic_inf, 1), " - ", round(ic_sup, 1), "]"),
+      ic = paste0("[", ic_inf, " - ", ic_sup, "]"),
       row_number = row_number(),
       spine_chart = NA,
       display_type = ifelse(result_column == "oe", "Estandarditzat", "Cru"),
@@ -155,7 +155,7 @@ summary_data <- reactive({
     final <- final %>%
       select(
         ambit, ambit_curt, dimensio, codi_indicador, 
-        nom_indicador, any, r, ic, trend_icona, Granularitat, `Centre/Territori`,
+        nom_indicador, any, oe, ic, trend_icona, Granularitat, `Centre/Territori`,
         row_number, spine_chart, Q100, Q75, Q25, Q0, q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
       )
   } else {
@@ -620,16 +620,25 @@ output$taula_resum <- renderUI({
                                  #   }),
                                  
                                  
-                                 # Chosen area column -------
-                                 r = colDef(
+                                 # Resultat cru column column -------
+                                 r = if(!is_standardized) colDef(
                                    maxWidth = 100,
                                    filterable = T,
                                    align = "center",
-                                   name = if(!is_standardized) "Resultat" else "Raó O/E",
-                                   #name = selected_values$center,
+                                   name = "Resultat",
                                    cell = function(value){
                                      div(style = "margin-top: 10px; margin-bottom: 5px;", value)
-                                   }),
+                                   }) else NULL,
+                                 
+                                 # OE column -------
+                                 oe = if(is_standardized) colDef(
+                                   maxWidth = 100,
+                                   filterable = T,
+                                   align = "center",
+                                   name = "Raó O/E",
+                                   cell = function(value){
+                                     div(style = "margin-top: 10px; margin-bottom: 5px;", value)
+                                   }) else NULL,
                                  
                                  # Mesura column - conditionally include
                                  ic = if(is_standardized) colDef(
@@ -693,205 +702,226 @@ output$taula_resum <- renderUI({
                                      div(style = "margin-top: 0px; margin-bottom: 0px;", trend_indicator(value))
                                    }),                                
                                  
-                                 # in-line chart -------
-                                 spine_chart = colDef(
-                                   html = TRUE,
-                                   minWidth = 200,
-                                   header = htmltools::tags$div(
-                                     style = "display: flex; justify-content: space-between; width: 100%;",
-                                     htmltools::tags$div(style = "text-align: right; flex: 1;", "< mitjana"),
-                                     htmltools::tags$div(style = "text-align: center; flex: 1;", "|"),
-                                     htmltools::tags$div(style = "text-align: left; flex: 1;", "> mitjana")
-                                   ),
-                                     cell = JS("function(rowInfo) {
-  const chartId = `spine-chart-${rowInfo.values['row_number']}`;
-  const html = `<div id='${chartId}' style='width:100%;height:50px; margin-top: 8px; margin-bottom: 0px;'></div>`;
-  
-  setTimeout(() => {
-    const chart = echarts.init(document.getElementById(chartId));
+                                # in-line chart -------
+                                spine_chart = colDef(
+                                  html = TRUE,
+                                  minWidth = 200,
+                                  header = htmltools::tags$div(
+                                    style = "display: flex; justify-content: space-between; width: 100%;",
+                                    htmltools::tags$div(style = "text-align: right; flex: 1;", "< mitjana"),
+                                    htmltools::tags$div(style = "text-align: center; flex: 1;", "|"),
+                                    htmltools::tags$div(style = "text-align: left; flex: 1;", "> mitjana")
+                                  ),
+                                  cell = JS("function(rowInfo) {
+    const chartId = `spine-chart-${rowInfo.values['row_number']}`;
+    const html = `<div id='${chartId}' style='width:100%;height:50px; margin-top: 8px; margin-bottom: 0px;'></div>`;
     
-    // Determine if using standardized results
-    const isStandardized = rowInfo.values['display_type'] === 'Estandarditzat';
-    
-    // Set line color and position based on display_type
-    const lineColor = isStandardized ? 'black' : 'red';
-    const linePosition = isStandardized ? 1 : 0.5;
-    
-    // Set x-axis range based on display_type
-    const xMin = 0;
-    const xMax = isStandardized ? 2 : 1;
-    
-    // Calculate tooltip values based on display type
-    // For standardized results, use raw values instead of normalized
-    const valuesMap = isStandardized ? {
-      'Q0': rowInfo.values['Q0'],
-      'Q25': rowInfo.values['Q25'],
-      'Q75': rowInfo.values['Q75'], 
-      'Q100': rowInfo.values['Q100'],
-      'Resultat': rowInfo.values['r']
-    } : {
-      'Q0': rowInfo.values['Q0'],
-      'Q25': rowInfo.values['Q25'],
-      'Q75': rowInfo.values['Q75'],
-      'Q100': rowInfo.values['Q100'],
-      'Resultat': rowInfo.values['r']
-    };
-    
-    const option = {
-      grid: {
-        top: '1%',
-        bottom: '1%',
-        left: '3%',
-        right: '8%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'value',
-        min: xMin,
-        max: xMax,
-        show: false
-      },
-      yAxis: {
-        type: 'category',
-        show: false,
-        data: ['']
-      },
-      tooltip: {
-        trigger: 'item',
-        position: function(point, params, dom, rect, size) {
-          const [x, y] = point;
-          const { contentSize, viewSize } = size;
-          const tooltipWidth = contentSize[0];
-          const viewWidth = viewSize[0];
-          return x + tooltipWidth + 10 <= viewWidth ? [x + 10, y] : [x - tooltipWidth - 10, y];
+    setTimeout(() => {
+      const chart = echarts.init(document.getElementById(chartId));
+      
+      // Determine if using standardized results
+      const isStandardized = rowInfo.values['display_type'] === 'Estandarditzat';
+      
+      // Get the result value based on display type
+      const resultValue = isStandardized ? rowInfo.values['oe'] : rowInfo.values['r'];
+      
+      // For standardized results, we need to calculate proper ranges
+      let xMin, xMax, linePosition;
+      let q0Val, q25Val, q75Val, q100Val, resultPos;
+      
+      if (isStandardized) {
+        // Use raw quartile values for standardized results
+        q0Val = rowInfo.values['Q0'];
+        q25Val = rowInfo.values['Q25'];
+        q75Val = rowInfo.values['Q75'];
+        q100Val = rowInfo.values['Q100'];
+        resultPos = resultValue;
+        
+        // Calculate range with some padding
+        const minVal = Math.min(q0Val, resultValue, 1); // 1 is the reference value
+        const maxVal = Math.max(q100Val, resultValue, 1);
+        const padding = (maxVal - minVal) * 0.1;
+        xMin = Math.max(0, minVal - padding);
+        xMax = maxVal + padding;
+        linePosition = 1; // Reference line at 1 for O/E ratio
+      } else {
+        // Use normalized values for non-standardized results
+        q0Val = rowInfo.values['q0'];
+        q25Val = rowInfo.values['q25'];
+        q75Val = rowInfo.values['q75'];
+        q100Val = rowInfo.values['q100'];
+        resultPos = rowInfo.values['chosen_value'];
+        
+        xMin = 0;
+        xMax = 1;
+        linePosition = 0.5; // Reference line at midpoint
+      }
+      
+      // Set line color based on display_type
+      const lineColor = isStandardized ? 'black' : 'red';
+      
+      // Calculate tooltip values based on display type
+      const valuesMap = {
+        'Q0': rowInfo.values['Q0'],
+        'Q25': rowInfo.values['Q25'],
+        'Q75': rowInfo.values['Q75'],
+        'Q100': rowInfo.values['Q100'],
+        'Resultat': resultValue
+      };
+      
+      const option = {
+        grid: {
+          top: '1%',
+          bottom: '1%',
+          left: '3%',
+          right: '8%',
+          containLabel: true
         },
-        formatter: function(params) {
-          const value = valuesMap[params.seriesName] !== undefined 
-            ? valuesMap[params.seriesName].toFixed(2) 
-            : params.value[0].toFixed(2);
-          
-          return `<strong>${params.seriesName}:</strong> ${value}`;
-        }
-      },
-      series: [
-        // Circle for chosen value
-        {
-          name: 'Resultat',
-          type: 'scatter',
-          data: [[isStandardized ? rowInfo.values['r'] : rowInfo.values['chosen_value'], 0]],
-          itemStyle: {
-            color: rowInfo.values['marker_colour'],
-            borderColor: 'black',
-            borderWidth: 1
+        xAxis: {
+          type: 'value',
+          min: xMin,
+          max: xMax,
+          show: false
+        },
+        yAxis: {
+          type: 'category',
+          show: false,
+          data: ['']
+        },
+        tooltip: {
+          trigger: 'item',
+          position: function(point, params, dom, rect, size) {
+            const [x, y] = point;
+            const { contentSize, viewSize } = size;
+            const tooltipWidth = contentSize[0];
+            const viewWidth = viewSize[0];
+            return x + tooltipWidth + 10 <= viewWidth ? [x + 10, y] : [x - tooltipWidth - 10, y];
           },
-          symbolSize: 16,
-          z: 5
+          formatter: function(params) {
+            const value = valuesMap[params.seriesName] !== undefined 
+              ? valuesMap[params.seriesName].toFixed(2) 
+              : params.value[0].toFixed(2);
+            
+            return `<strong>${params.seriesName}:</strong> ${value}`;
+          }
         },
-        // Circle for Q25
-        {
-          name: 'Q25',
-          type: 'scatter',
-          data: [[isStandardized ? rowInfo.values['Q25'] : rowInfo.values['q25'], 0]],
-          itemStyle: {
-            color: 'darkgray',
-            borderColor: 'darkgray',
-            borderWidth: 1
-          },
-          symbolSize: 10,
-          z: 3
-        },
-        // Circle for Q75
-        {
-          name: 'Q75',
-          type: 'scatter',
-          data: [[isStandardized ? rowInfo.values['Q75'] : rowInfo.values['q75'], 0]],
-          itemStyle: {
-            color: 'darkgray',
-            borderColor: 'darkgray',
-            borderWidth: 1
-          },
-          symbolSize: 10,
-          z: 3
-        },
-        // Circle for Q0
-        {
-          name: 'Q0',
-          type: 'scatter',
-          data: [[isStandardized ? rowInfo.values['Q0'] : rowInfo.values['q0'], 0]],
-          itemStyle: {
-            color: 'lightgray',
-            borderColor: 'lightgray',
-            borderWidth: 1
-          },
-          symbolSize: 10,
-          z: 3
-        },
-        // Circle for Q100
-        {
-          name: 'Q100',
-          type: 'scatter',
-          data: [[isStandardized ? rowInfo.values['Q100'] : rowInfo.values['q100'], 0]],
-          itemStyle: {
-            color: 'lightgray',
-            borderColor: 'lightgray',
-            borderWidth: 1
-          },
-          symbolSize: 10,
-          z: 3
-        },
-        // Vertical line for the mean or reference value
-        {
-          name: isStandardized ? 'Referència' : 'Mitjana',
-          type: 'scatter',
-          markLine: {
-            symbol: 'none',
-            lineStyle: {
-              color: lineColor,
-              width: 3,
-              type: 'solid'
+        series: [
+          // Circle for chosen value
+          {
+            name: 'Resultat',
+            type: 'scatter',
+            data: [[resultPos, 0]],
+            itemStyle: {
+              color: rowInfo.values['marker_colour'],
+              borderColor: 'black',
+              borderWidth: 1
             },
-            data: [{ xAxis: linePosition }]
+            symbolSize: 16,
+            z: 5
           },
-          animation: false
-        },
-        // Horizontal line from Q0 to Q100
-        {
-          name: 'Q0-Q100 Line',
-          type: 'line',
-          data: [[isStandardized ? rowInfo.values['Q0'] : rowInfo.values['q0'], 0], 
-                 [isStandardized ? rowInfo.values['Q100'] : rowInfo.values['q100'], 0]],
-          lineStyle: {
-            color: 'lightgray',
-            width: 10,
-            type: 'solid',
-            opacity: 0.7
+          // Circle for Q25
+          {
+            name: 'Q25',
+            type: 'scatter',
+            data: [[q25Val, 0]],
+            itemStyle: {
+              color: 'darkgray',
+              borderColor: 'darkgray',
+              borderWidth: 1
+            },
+            symbolSize: 10,
+            z: 3
           },
-          z: 1
-        },
-        // Line connecting Q25 and Q75
-        {
-          name: 'Q25-Q75 Line',
-          type: 'line',
-          data: [[isStandardized ? rowInfo.values['Q25'] : rowInfo.values['q25'], 0], 
-                 [isStandardized ? rowInfo.values['Q75'] : rowInfo.values['q75'], 0]],
-          lineStyle: {
-            color: 'darkgray',
-            width: 10,
-            type: 'solid',
-            opacity: 0.7
+          // Circle for Q75
+          {
+            name: 'Q75',
+            type: 'scatter',
+            data: [[q75Val, 0]],
+            itemStyle: {
+              color: 'darkgray',
+              borderColor: 'darkgray',
+              borderWidth: 1
+            },
+            symbolSize: 10,
+            z: 3
           },
-          z: 2
-        }
-      ],
-      animation: true
-    };
+          // Circle for Q0
+          {
+            name: 'Q0',
+            type: 'scatter',
+            data: [[q0Val, 0]],
+            itemStyle: {
+              color: 'lightgray',
+              borderColor: 'lightgray',
+              borderWidth: 1
+            },
+            symbolSize: 10,
+            z: 3
+          },
+          // Circle for Q100
+          {
+            name: 'Q100',
+            type: 'scatter',
+            data: [[q100Val, 0]],
+            itemStyle: {
+              color: 'lightgray',
+              borderColor: 'lightgray',
+              borderWidth: 1
+            },
+            symbolSize: 10,
+            z: 3
+          },
+          // Vertical line for the mean or reference value
+          {
+            name: isStandardized ? 'Referència' : 'Mitjana',
+            type: 'scatter',
+            markLine: {
+              symbol: 'none',
+              lineStyle: {
+                color: lineColor,
+                width: 3,
+                type: 'solid'
+              },
+              data: [{ xAxis: linePosition }]
+            },
+            animation: false
+          },
+          // Horizontal line from Q0 to Q100
+          {
+            name: 'Q0-Q100 Line',
+            type: 'line',
+            data: [[q0Val, 0], [q100Val, 0]],
+            lineStyle: {
+              color: 'lightgray',
+              width: 10,
+              type: 'solid',
+              opacity: 0.7
+            },
+            z: 1
+          },
+          // Line connecting Q25 and Q75
+          {
+            name: 'Q25-Q75 Line',
+            type: 'line',
+            data: [[q25Val, 0], [q75Val, 0]],
+            lineStyle: {
+              color: 'darkgray',
+              width: 10,
+              type: 'solid',
+              opacity: 0.7
+            },
+            z: 2
+          }
+        ],
+        animation: true
+      };
+      
+      chart.setOption(option);
+    }, 0);
     
-    chart.setOption(option);
-  }, 0);
-  
-  return html;
-}")
-                                 ),
+    return html;
+  }")
+                                ),
                                  
                                  
                                  # hide some columns

@@ -178,11 +178,11 @@ rank_bar_data <- reactive({
       comp_name = rank_compar()$`Centre/Territori`,
       
       # Confidence interval for each center in rank_bar
-      ic = paste0("[", round(ic_inf, 1), "-", round(ic_sup, 1), "]"),
+      ic = paste0("[", ic_inf, "-", ic_sup, "]"),
       
       # Comparator confidence interval (only shown if using standardized results)
       comp_ic = if (use_standardized) {
-        paste0("[", round(rank_compar()$ic_inf, 1), "-", round(rank_compar()$ic_sup, 1), "]")
+        paste0("[", rank_compar()$ic_inf, "-", rank_compar()$ic_sup, "]")
       } else {
         NA_character_
       }
@@ -925,20 +925,46 @@ comparador_chart <- function() {
   } else { # If data is available, then plot it
     
     # Coloring based on if significantly different from comparator
+    # Coloring based on if significantly different from comparator
     rank_bar_data <- rank_bar_data() %>% 
-      mutate(color_pal = case_when(invers == 2 & resultat != comp_value ~ '#999966',
-                                   is.na(comp_value) | is.na(resultat) | resultat == 0 ~ '#999966',
-                                   resultat > comp_value & invers == 0 ~ '#91BFDB',
-                                   resultat > comp_value & invers == 1 ~ '#FC8D59',
-                                   resultat < comp_value & invers == 1 ~ '#91BFDB',
-                                   resultat < comp_value & invers == 0 ~ '#FC8D59', 
-                                   resultat == comp_value  ~ '#ccccff',
-                                   TRUE ~ 'pink'),
-             int_hover = case_when(color_pal == '#999966' ~ "Indicador sense interpretació",
-                                   color_pal == '#91BFDB' ~ "Resultat relativament millor que la referència",
-                                   color_pal == '#FC8D59' ~ "Resultat relativament pitjor que la referència",
-                                   color_pal == '#ccccff' ~ "Resultat igual al de la referència",
-                                   TRUE ~ "NA")
+      mutate(
+        # For standardized results, check if confidence interval contains 1 (not significant)
+        is_significant = if (isTRUE(input$result_toggle)) {
+          !(ic_inf <= 1 & ic_sup >= 1)  # Significant if CI does NOT contain 1
+        } else {
+          TRUE  # For non-standardized results, always consider significant
+        },
+        
+        color_pal = case_when(
+          # For standardized results with significance consideration
+          isTRUE(input$result_toggle) & !is_significant ~ '#CCCCCC',  # Gray for non-significant
+          isTRUE(input$result_toggle) & invers == 2 & resultat != comp_value ~ '#999966',  # Neutral interpretation
+          isTRUE(input$result_toggle) & is_significant & resultat > 1 & invers == 0 ~ '#91BFDB',  # Better than expected
+          isTRUE(input$result_toggle) & is_significant & resultat > 1 & invers == 1 ~ '#FC8D59',  # Worse than expected
+          isTRUE(input$result_toggle) & is_significant & resultat < 1 & invers == 1 ~ '#91BFDB',  # Better than expected
+          isTRUE(input$result_toggle) & is_significant & resultat < 1 & invers == 0 ~ '#FC8D59',  # Worse than expected
+          isTRUE(input$result_toggle) & resultat == 1 ~ '#ccccff',  # Equal to expected
+          
+          # For raw results (original logic)
+          !isTRUE(input$result_toggle) & invers == 2 & resultat != comp_value ~ '#999966',
+          !isTRUE(input$result_toggle) & (is.na(comp_value) | is.na(resultat) | resultat == 0) ~ '#999966',
+          !isTRUE(input$result_toggle) & resultat > comp_value & invers == 0 ~ '#91BFDB',
+          !isTRUE(input$result_toggle) & resultat > comp_value & invers == 1 ~ '#FC8D59',
+          !isTRUE(input$result_toggle) & resultat < comp_value & invers == 1 ~ '#91BFDB',
+          !isTRUE(input$result_toggle) & resultat < comp_value & invers == 0 ~ '#FC8D59', 
+          !isTRUE(input$result_toggle) & resultat == comp_value ~ '#ccccff',
+          
+          TRUE ~ 'pink'  # Fallback color for debugging
+        ),
+        
+        int_hover = case_when(
+          isTRUE(input$result_toggle) & !is_significant ~ "Resultat no significativament diferent del valor esperat",
+          color_pal == '#999966' ~ "Indicador sense interpretació",
+          color_pal == '#91BFDB' ~ "Resultat relativament millor que la referència",
+          color_pal == '#FC8D59' ~ "Resultat relativament pitjor que la referència",
+          color_pal == '#ccccff' ~ "Resultat igual al de la referència",
+          TRUE ~ "NA"
+        )
       )
     
     # Text for tooltip

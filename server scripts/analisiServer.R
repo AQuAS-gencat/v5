@@ -76,9 +76,9 @@ output$select_indicador_analisi_ui <- renderUI({
     })
   
   # Add the special HTML file as an additional option
-  ind_choices_analisi[["Mostra fitxes noves"]] <- list(
-    "Atenció malaltia cardiovascular bon control 4" = "fitxa_especial_cardiovascular"
-  )
+  #ind_choices_analisi[["Mostra fitxes noves"]] <- list(
+  #  "Atenció malaltia cardiovascular bon control 4" = "fitxa_especial_cardiovascular"
+  #)
   
   div(
     selectInput("select_indicador_analisi", 
@@ -99,9 +99,9 @@ indicador_id_reactive <- reactive({
   req(input$select_indicador_analisi)
   
   # Check if it's the special cardiovascular file
-  if(input$select_indicador_analisi == "fitxa_especial_cardiovascular") {
-    return("fitxa_especial_cardiovascular")
-  }
+#  if(input$select_indicador_analisi == "fitxa_especial_cardiovascular") {
+#    return("fitxa_especial_cardiovascular")
+#  }
   
   # Get the id_indicador for the selected indicator
   id_data <- dades_r_tbl %>%
@@ -134,23 +134,24 @@ output$analisi_html <- renderUI({
   }
   
   # Check if it's the special cardiovascular file
-  if(id_indicador == "fitxa_especial_cardiovascular") {
-    file_path <- "fitxes/Fitxa Atenció Primària_Atenció malaltia cardiovascular bon control 4.html"
-    
-    # Return the iframe with the special file
-    return(tags$iframe(
-      src = file_path,
-      width = "100%",
-      height = "800px",
-      frameborder = "0"
-    ))
-  }
+#  if(id_indicador == "fitxa_especial_cardiovascular") {
+#    file_path <- "fitxes/Fitxa Atenció Primària_Atenció malaltia cardiovascular bon control 4.html"
+#    
+#    # Return the iframe with the special file
+#    return(tags$iframe(
+#      src = file_path,
+#      width = "100%",
+#      height = "800px",
+#      frameborder = "0"
+#    ))
+#  }
   
   # List all HTML files in the fitxes directory
   all_files <- list.files("www/fitxes", pattern = "\\.html$", full.names = FALSE)
   
   # Look for files that start with "CdR_" followed by the indicator ID
-  pattern <- paste0("^CdR_", id_indicador, "_")
+#  pattern <- paste0("^CdR_", id_indicador, "_")
+  pattern <- paste0(id_indicador)
   matching_files <- all_files[grep(pattern, all_files)]
   
   # Add debugging
