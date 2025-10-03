@@ -111,11 +111,11 @@ alfred <- collect(open_dataset("datasets/alfred", format = "parquet")) %>%
 #  filter(visio != "C")
 
 
-dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_c.parquet'")) 
+dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_c/*.parquet'")) 
 
-dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades_r.parquet'")) 
+dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_r/*.parquet'")) 
 
-dades_total <- tbl(con, sql("SELECT * FROM 'datasets/dades/dades.parquet'"))
+dades_total <- tbl(con, sql("SELECT * FROM 'datasets/dades/*.parquet'"))
 
 #dades_tbl = dades_tbl %>% 
 #  unique() #%>% 
@@ -256,7 +256,7 @@ centre = dades_total %>% filter(Granularitat == "Centre (Unitat proveïdora)") %
 
 
 min_year <- dades_total %>% pull(any) %>% min()
-max_year <- dades_total %>% pull(any) %>% max()
+max_year <- dades_total %>% pull(any) %>%  max()
 
 
 

@@ -33,24 +33,32 @@ observeEvent(input$rs=="FALSE", {#for RSs
   updateSelectizeInput(session, "rs_true", label = NULL, 
                        choices = rs, selected = character(0), 
                        options = list(placeholder = "Tria o escriu una o més regions sanitàries")) 
+  # Also uncheck the select all checkbox
+  updateAwesomeCheckbox(session, "select_all_rs", value = FALSE)
 })
 
 observeEvent(input$aga=="FALSE", { #for AGAs
   updateSelectizeInput(session, "aga_true", label = NULL,
                        choices = aga, selected = character(0),
                        options = list(placeholder = "Tria o escriu una o més AGAs")) 
+  # Also uncheck the select all checkbox
+  updateAwesomeCheckbox(session, "select_all_aga", value = FALSE)
 })
 
 observeEvent(input$abs=="FALSE", { #for ABSs
   updateSelectizeInput(session, "abs_true", label = NULL,
                        choices = abs, selected = character(0),
                        options = list(placeholder = "Tria o escriu una o més ABSs")) 
+  # Also uncheck the select all checkbox
+  updateAwesomeCheckbox(session, "select_all_abs", value = FALSE)
 })
 
 observeEvent(input$centre=="FALSE", { #for centres
   updateSelectizeInput(session, "centre_true", label = NULL,
                        choices = centre, selected = character(0), options = 
                          list(placeholder = "Tria o escriu un o més centres"))
+  # Also uncheck the select all checkbox
+  updateAwesomeCheckbox(session, "select_all_centre", value = FALSE)
 })
 
 
@@ -77,15 +85,23 @@ observeEvent(input$clear, {
   updateCheckboxInput(session, "rs", label = NULL, value = FALSE)
   updateSelectInput(session, "rs_true", label = NULL,
                     choices = rs, selected = character(0))
+  updateAwesomeCheckbox(session, "select_all_rs", value = FALSE)
+  
   updateCheckboxInput(session, "aga", label = NULL, value = FALSE)
-  updateSelectInput(session, "aga_true", label = NULL, #"Type in the box to search",
+  updateSelectInput(session, "aga_true", label = NULL,
                     choices = aga, selected = character(0))
+  updateAwesomeCheckbox(session, "select_all_aga", value = FALSE)
+  
   updateCheckboxInput(session, "abs", label = NULL, value = FALSE)
-  updateSelectInput(session, "abs_true", label = NULL, #"Type in the box to search",
+  updateSelectInput(session, "abs_true", label = NULL,
                     choices = abs, selected = character(0))
+  updateAwesomeCheckbox(session, "select_all_abs", value = FALSE)
+  
   updateCheckboxInput(session, "centre", label = NULL, value = FALSE)
-  updateSelectInput(session, "centre_true", label = NULL, #"Type in the box to search",
+  updateSelectInput(session, "centre_true", label = NULL,
                     choices = centre, selected = character(0))
+  updateAwesomeCheckbox(session, "select_all_centre", value = FALSE)
+  
   updateCheckboxInput(session, "catalunya", label = NULL, value = FALSE)
   updateCheckboxInput(session, "all_geo", label = NULL, value = FALSE)
   updateSliderInput(session, "date_from", label = NULL, value = c(min_year,max_year),
@@ -101,6 +117,67 @@ observeEvent(input$clear, {
                      status = "primary", checkbox = TRUE)
   
 })
+
+
+###############################################.
+## Select All Checkboxes ----
+###############################################.
+
+# Select all RS checkbox
+observeEvent(input$select_all_rs, {
+  if (input$select_all_rs) {
+    # If checked, select all RS
+    updateSelectizeInput(session, "rs_true", 
+                         selected = rs,
+                         choices = rs)
+  } else {
+    # If unchecked, clear selections
+    updateSelectizeInput(session, "rs_true", 
+                         selected = character(0),
+                         choices = rs)
+  }
+})
+
+# Select all AGA checkbox
+observeEvent(input$select_all_aga, {
+  if (input$select_all_aga) {
+    updateSelectizeInput(session, "aga_true", 
+                         selected = aga,
+                         choices = aga)
+  } else {
+    updateSelectizeInput(session, "aga_true", 
+                         selected = character(0),
+                         choices = aga)
+  }
+})
+
+# Select all ABS checkbox
+observeEvent(input$select_all_abs, {
+  if (input$select_all_abs) {
+    updateSelectizeInput(session, "abs_true", 
+                         selected = abs,
+                         choices = abs)
+  } else {
+    updateSelectizeInput(session, "abs_true", 
+                         selected = character(0),
+                         choices = abs)
+  }
+})
+
+# Select all centres checkbox
+observeEvent(input$select_all_centre, {
+  if (input$select_all_centre) {
+    updateSelectizeInput(session, "centre_true", 
+                         selected = centre,
+                         choices = centre)
+  } else {
+    updateSelectizeInput(session, "centre_true", 
+                         selected = character(0),
+                         choices = centre)
+  }
+})
+
+
 
 ###############################################.
 ## Reactive data ----
@@ -271,13 +348,9 @@ output$table_filtered <- renderDT({
         list(
           extend = 'colvis',
           text = 'Mostra/amaga columnes',
-          columns = ':visible'  # Apply to all visible columns
-        )#,
-        #list(
-        #  extend = 'csv',
-        #  text = 'Descarrega CSV',
-        #  filename = 'dades_filtrades'
-        #)
+          columns = ':visible',  # Apply to all visible columns
+          className = 'btn-link dt-button-link'  # Add custom CSS class
+        )
       ),
       language = list(
         info = "Mostrant _START_ a _END_ de _TOTAL_ files",
@@ -289,6 +362,27 @@ output$table_filtered <- renderDT({
           colvis = "Columnes",
           colvisRestore = "Restaura columnes"
         )
+      ),
+      # Add initialization callback to apply custom styling
+      initComplete = JS(
+        "function(settings, json) {",
+        "  // Style the column visibility button to look like actionLink",
+        "  $('.dt-button-link').css({",
+        "    'background': 'none',",
+        "    'border': 'none',",
+        "    'color': '#007bff',", # Bootstrap primary color
+        "    'text-decoration': 'underline',",
+        "    'cursor': 'pointer',",
+        "    'padding': '0',",
+        "    'font-size': 'inherit',",
+        "    'font-family': 'inherit'",
+        "  });",
+        "  // Add hover effect",
+        "  $('.dt-button-link').hover(",
+        "    function() { $(this).css('color', '#0056b3'); },", # Darker on hover
+        "    function() { $(this).css('color', '#007bff'); }",   # Original color
+        "  );",
+        "}"
       )
     ),
     colnames = c(
@@ -308,7 +402,6 @@ output$table_filtered <- renderDT({
   )
   
 })
-
 
 #print(filter_table())
 

@@ -1,2 +1,3 @@
 prepare_data.R
 .datasets/dades_total/
+.datasets/dades_old/

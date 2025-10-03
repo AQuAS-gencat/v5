@@ -90,7 +90,7 @@ estratTab <- nav_panel(
                   max = 2024,  # Placeholder value
                   value = c(2016, 2024),  # Placeholder value
                   step = 1,
-                  ticks = T,
+                  ticks = FALSE,
                   sep = ""
                 )
               )

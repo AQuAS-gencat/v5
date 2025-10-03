@@ -55,28 +55,44 @@ descarreguesTab <- nav_panel(
               conditionalPanel(
                 condition = "input.rs == true",
                 selectizeInput("rs_true", label = NULL,
-                               choices = rs, selected = NULL, multiple=TRUE),
-                options = list(placeholder = "Selecciona o escriu les regions sanitàries que vulguis mostrar")),
+                               choices = rs, selected = NULL, multiple=TRUE,
+                               options = list(placeholder = "Selecciona o escriu les regions sanitàries que vulguis mostrar")),
+                div(style = "margin-top: 5px; margin-bottom: 10px;",
+                    awesomeCheckbox("select_all_rs", "Selecciona totes les RS", value = FALSE)
+                )
+              ),
               # Panel for AGA selections
               awesomeCheckbox("aga", label = "Àrea de Gestió Assistencial", value = FALSE),
               conditionalPanel(
                 condition = "input.aga == true",
                 selectizeInput("aga_true", label = NULL,
                                choices = aga, selected = NULL, multiple=TRUE, 
-                               options = list(placeholder = "Selecciona o escriu les AGA que vulguis mostrar"))),
+                               options = list(placeholder = "Selecciona o escriu les AGA que vulguis mostrar")),
+                div(style = "margin-top: 5px; margin-bottom: 10px;",
+                    awesomeCheckbox("select_all_aga", "Selecciona totes les AGA", value = FALSE)
+                )
+              ),
               # Panel for ABS selections
               awesomeCheckbox("abs",label = "Àrea Bàsica de Salut", value = FALSE),
               conditionalPanel(
                 condition = "input.abs == true",
                 selectizeInput("abs_true", label = NULL,
                                choices = abs, selected = NULL, multiple=TRUE,
-                               options = list(placeholder = "Selecciona o escriu les ABS que vulguis mostrar"))),
+                               options = list(placeholder = "Selecciona o escriu les ABS que vulguis mostrar")),
+                div(style = "margin-top: 5px; margin-bottom: 10px;",
+                    awesomeCheckbox("select_all_abs", "Selecciona totes les ABS", value = FALSE)
+                )
+              ),
               # Panel for centre selections
               awesomeCheckbox("centre",label = "Centre (Unitat proveïdora)", value = FALSE),
               conditionalPanel(
                 condition = "input.centre == true",
                 selectizeInput("centre_true", label = NULL, choices = centre, 
-                               selected = NULL, multiple=TRUE)),
+                               selected = NULL, multiple=TRUE),
+                div(style = "margin-top: 5px; margin-bottom: 10px;",
+                    awesomeCheckbox("select_all_centre", "Selecciona tots els centres", value = FALSE)
+                )
+              ),
               # To select all available geographies
               awesomeCheckbox("all_geo",label = "Tots els nivells geogràfics disponibles", value = FALSE)
             ),
@@ -84,18 +100,6 @@ descarreguesTab <- nav_panel(
             accordion_panel(
               value = "interval_panel_dades",
               "Si ho vols, selecciona un període temporal concret",
-              #sliderInput(
-              #  inputId = "year_range_estrat",
-              #  label = NULL,
-              #  #label = "Tria un interval:",
-              #  #shiny::HTML("<p class='step-text'>Tria un interval</p>"), 
-              #  min = 2016,  # Placeholder value
-              #  max = 2024,  # Placeholder value
-              #  value = c(2016, 2024),  # Placeholder value
-              #  step = 1,
-              #  ticks = F,
-              #  sep = ""
-              #),
               uiOutput("date_slider_ui")
             )
             
@@ -107,11 +111,11 @@ descarreguesTab <- nav_panel(
           ),
           actionLink(
             inputId = "download_table_excel",
-            label = "Descarrega la taula",
+            label = HTML('<i class="fas fa-download"></i> Descarrega la taula'),
           ),
           actionLink(
             inputId = "download_all_csv",
-            label = "Descarrega la base dades completa",
+            label = HTML('<i class="fas fa-download"></i> Descarrega la base de dades sencera'),
           )
           
           #br(),
@@ -125,7 +129,7 @@ descarreguesTab <- nav_panel(
                          style = "font-size: 98%; width: 98%"))
         )
         
-
+        
         
         
       )

@@ -5,8 +5,9 @@ account: aquas-gencat
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13681861
-bundleId: 10968136
+bundleId: 10978767
 url: https://aquas-gencat.shinyapps.io/cdr25/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: codebook5.parquet

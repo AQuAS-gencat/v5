@@ -152,6 +152,26 @@ rank_bar_data <- reactive({
       nom_indicador == selected_values$indicador
     ) 
   
+  # Apply desc_nivell_curta filter if applicable
+  if (desc_nivell_filter_applicable_comparador()) {
+    # Get the hospital level of the selected center
+    center_hospital_level <- dades_tbl %>%
+      filter(
+        `Centre/Territori` == selected_values$center,
+        Granularitat == "Centre (Unitat proveïdora)",
+        ambit == "Atenció Hospitalària"
+      ) %>%
+      pull(desc_nivell_curta) %>%
+      unique() %>%
+      na.omit()
+    
+    if (length(center_hospital_level) > 0) {
+      # Only show centers with the same hospital level
+      rank_bar <- rank_bar %>%
+        filter(desc_nivell_curta == !!center_hospital_level[1])
+    }
+  }
+  
   # Determine which result to use based on standardized results availability
   use_standardized <- has_standardized_results() && isTRUE(input$result_toggle)
   
@@ -194,7 +214,6 @@ rank_bar_data <- reactive({
   return(rank_bar)
 })
 
-
 # Check if standardized results exist for the selected indicator
 has_standardized_results <- reactive({
   req(selected_values$indicador, selected_values$ambit)
@@ -210,6 +229,34 @@ has_standardized_results <- reactive({
     pull(has_oe)
   
   return(oe_check)
+})
+
+
+###############################################.
+## Conditional desc_nivell_curta filter ----
+###############################################.
+
+# Check if desc_nivell_curta filter should be shown
+desc_nivell_filter_applicable_comparador <- reactive({
+  req(selected_values$center, selected_values$ambit)
+  
+  if (selected_values$geography == "Centre (Unitat proveïdora)" && 
+      selected_values$ambit == "Atenció Hospitalària") {
+    
+    # Check if the selected center has desc_nivell_curta data
+    applicable_center <- dades_tbl %>%
+      filter(
+        `Centre/Territori` == selected_values$center,
+        Granularitat == "Centre (Unitat proveïdora)",
+        ambit == "Atenció Hospitalària",
+        !is.na(desc_nivell_curta)
+      ) %>%
+      collect()
+    
+    return(nrow(applicable_center) > 0)
+  } else {
+    return(FALSE)
+  }
 })
 
 
@@ -506,14 +553,14 @@ output$result_toggle_ui <- renderUI({
 #})
 #outputOptions(output, "subtipologia_rank_exists", suspendWhenHidden = FALSE)
 
-#nivell_rank_exists <- reactive({
-#  !is.na(unique(rank_bar_data()$nivell))
-#})
+nivell_rank_exists <- reactive({
+  !is.na(unique(rank_bar_data()$desc_nivell_curta))
+})
 
-#output$nivell_rank_exists <- reactive({
-#  nivell_rank_exists()
-#})
-#outputOptions(output, "nivell_rank_exists", suspendWhenHidden = FALSE)
+output$nivell_rank_exists <- reactive({
+  nivell_rank_exists()
+})
+outputOptions(output, "nivell_rank_exists", suspendWhenHidden = FALSE)
 
 
 
@@ -842,33 +889,33 @@ output$subtitol_comparador2_taula <- renderText({
 
 # Update nivell_comparador
 
-#output$nivell_comparador <- renderText({ 
-#  
-#  if (nivell_rank_exists()) {
-#    
-#    HTML(paste0("Nivell hospitalari: ", unique(rank_bar_data()$nivell)))
-#    
-#  } else {
-#    
-#    NULL
-#    
-#  }
-#  
-#})
-#
-#output$nivell_comparador_taula <- renderText({ 
-#  
-#  if (nivell_rank_exists()) {
-#    
-#    HTML(paste0("Nivell hospitalari: ", unique(rank_bar_data()$nivell)))
-#    
-#  } else {
-#    
-#    NULL
-#    
-#  }
-#  
-#})
+output$nivell_comparador <- renderText({ 
+  
+  if (nivell_rank_exists()) {
+    
+    HTML(paste0("Nivell hospitalari: ", unique(rank_bar_data()$desc_nivell_curta)))
+    
+  } else {
+    
+    NULL
+    
+  }
+  
+})
+
+output$nivell_comparador_taula <- renderText({ 
+  
+  if (nivell_rank_exists()) {
+    
+    HTML(paste0("Nivell hospitalari: ", unique(rank_bar_data()$desc_nivell_curta)))
+    
+  } else {
+    
+    NULL
+    
+  }
+  
+})
 
 
 output$cat_checkbox_ui <- renderUI({
@@ -938,31 +985,40 @@ comparador_chart <- function() {
         color_pal = case_when(
           # For standardized results with significance consideration
           isTRUE(input$result_toggle) & !is_significant ~ '#CCCCCC',  # Gray for non-significant
-          isTRUE(input$result_toggle) & invers == 2 & resultat != comp_value ~ '#999966',  # Neutral interpretation
+          isTRUE(input$result_toggle) & is_significant & resultat > 1 & invers == 2 ~ '#999966',  # Neutral interpretation
+          isTRUE(input$result_toggle) & is_significant & resultat < 1 & invers == 2 ~ '#c4c482',  # Neutral interpretation
           isTRUE(input$result_toggle) & is_significant & resultat > 1 & invers == 0 ~ '#91BFDB',  # Better than expected
           isTRUE(input$result_toggle) & is_significant & resultat > 1 & invers == 1 ~ '#FC8D59',  # Worse than expected
           isTRUE(input$result_toggle) & is_significant & resultat < 1 & invers == 1 ~ '#91BFDB',  # Better than expected
           isTRUE(input$result_toggle) & is_significant & resultat < 1 & invers == 0 ~ '#FC8D59',  # Worse than expected
           isTRUE(input$result_toggle) & resultat == 1 ~ '#ccccff',  # Equal to expected
+          isTRUE(input$result_toggle) & resultat == comp_value ~ '#ccccff',  # Equal to reference
           
           # For raw results (original logic)
-          !isTRUE(input$result_toggle) & invers == 2 & resultat != comp_value ~ '#999966',
-          !isTRUE(input$result_toggle) & (is.na(comp_value) | is.na(resultat) | resultat == 0) ~ '#999966',
+          !isTRUE(input$result_toggle) & resultat > comp_value & invers == 2 ~ '#999966',
+          !isTRUE(input$result_toggle) & resultat < comp_value & invers == 2 ~ '#c4c482',
+          !isTRUE(input$result_toggle) & (is.na(comp_value) | is.na(resultat) | resultat == 0) ~ 'pink',
           !isTRUE(input$result_toggle) & resultat > comp_value & invers == 0 ~ '#91BFDB',
           !isTRUE(input$result_toggle) & resultat > comp_value & invers == 1 ~ '#FC8D59',
           !isTRUE(input$result_toggle) & resultat < comp_value & invers == 1 ~ '#91BFDB',
           !isTRUE(input$result_toggle) & resultat < comp_value & invers == 0 ~ '#FC8D59', 
           !isTRUE(input$result_toggle) & resultat == comp_value ~ '#ccccff',
           
-          TRUE ~ 'pink'  # Fallback color for debugging
+          TRUE ~ 'purple'  # Fallback color for debugging
         ),
         
         int_hover = case_when(
           isTRUE(input$result_toggle) & !is_significant ~ "Resultat no significativament diferent del valor esperat",
-          color_pal == '#999966' ~ "Indicador sense interpretació",
-          color_pal == '#91BFDB' ~ "Resultat relativament millor que la referència",
-          color_pal == '#FC8D59' ~ "Resultat relativament pitjor que la referència",
-          color_pal == '#ccccff' ~ "Resultat igual al de la referència",
+          color_pal == '#999966' & !isTRUE(input$result_toggle) ~ "Resultat superior a la referència",
+          color_pal == '#c4c482' & !isTRUE(input$result_toggle) ~ "Resultat inferior a la referència",
+          color_pal == '#91BFDB' & !isTRUE(input$result_toggle) ~ "Resultat relativament millor que la referència",
+          color_pal == '#FC8D59' & !isTRUE(input$result_toggle) ~ "Resultat relativament pitjor que la referència",
+          color_pal == '#ccccff' & !isTRUE(input$result_toggle) ~ "Resultat igual al de la referència",
+          color_pal == '#999966' & isTRUE(input$result_toggle)~ "Resultat significativament superior a l'esperat",
+          color_pal == '#c4c482' & isTRUE(input$result_toggle)~ "Resultat significativament inferior a l'esperat",
+          color_pal == '#91BFDB' & isTRUE(input$result_toggle)~ "Resultat millor que l'esperat",
+          color_pal == '#FC8D59' & isTRUE(input$result_toggle)~ "Resultat pitjor que l'esperat",
+          color_pal == '#ccccff' & isTRUE(input$result_toggle)~ "Resultat igual al de la referència",
           TRUE ~ "NA"
         )
       )
@@ -970,7 +1026,7 @@ comparador_chart <- function() {
     # Text for tooltip
     tooltip_bar <- if (isTRUE(input$result_toggle)) {
       paste0(rank_bar_data()$`Centre/Territori`, ": ", "<b>", round(rank_bar_data()$resultat, 2), "</b> ",  rank_bar_data()$ic, " (Raó O/E)",
-             "<br>", selected_values$center, ": ", "<b>", round(rank_bar_data()$comp_value, 2), "</b> ",  rank_bar_data()$comp_ic, " (Raó O/E)",
+             #"<br>", selected_values$center, ": ", "<b>", round(rank_bar_data()$comp_value, 2), "</b> ",  rank_bar_data()$comp_ic, " (Raó O/E)",
              "<br>", rank_bar_data$int_hover)
       
       
@@ -989,7 +1045,7 @@ comparador_chart <- function() {
     order_areas <- as.vector(rank_bar_data()$`Centre/Territori`)
     
     # Determine the type of chart based on the number of bars
-    if (nrow(rank_bar_data()) > 80) {
+    if (nrow(rank_bar_data()) > 20) {
       # Vertical bar chart
       rank_plot <- plot_ly(data = rank_bar_data, height = 400) %>%
         add_trace(x = ~`Centre/Territori`, 
@@ -1058,7 +1114,7 @@ comparador_chart <- function() {
     if (isTRUE(input$result_toggle)) {
       # For standardized results (result_toggle = TRUE)
       # Always add a reference line at value 1
-      if (nrow(rank_bar_data()) <= 80) {
+      if (nrow(rank_bar_data()) <= 20) {
         rank_plot <- rank_plot %>%
           add_trace(y = ~`Centre/Territori`, 
                     x = ~comp_value, 

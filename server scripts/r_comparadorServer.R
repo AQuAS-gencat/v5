@@ -1032,7 +1032,7 @@ r_comparador_chart <- function() {
     r_order_areas <- as.vector(r_rank_bar_data()$`Centre/Territori`)
     
     # Determine the type of chart based on the number of bars
-    if (nrow(r_rank_bar_data()) > 40) {
+    if (nrow(r_rank_bar_data()) > 20) {
       # Vertical bar chart
       r_rank_plot <- plot_ly(data = r_rank_bar_data, height = 400) %>%
         add_trace(x = ~`Centre/Territori`, 
@@ -1106,7 +1106,7 @@ r_comparador_chart <- function() {
     if (isTRUE(input$r_result_toggle)) {
       # For standardized results (r_result_toggle = TRUE)
       # Always add a reference line at value 1
-      if (nrow(r_rank_bar_data()) <= 40) {
+      if (nrow(r_rank_bar_data()) <= 20) {
         r_rank_plot <- r_rank_plot %>%
           add_trace(y = ~`Centre/Territori`, 
                     x = ~comp_value, 
