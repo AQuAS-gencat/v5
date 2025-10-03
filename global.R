@@ -113,6 +113,11 @@ alfred <- collect(open_dataset("datasets/alfred", format = "parquet")) %>%
 
 dades_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_c/*.parquet'")) 
 
+# Load pre-calculated resum dataset
+dades_resum_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_resum_precalc/*.parquet'"))
+# Load pre-calculated r_resum dataset
+dades_r_resum_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_r_resum_precalc/*.parquet'"))
+
 dades_r_tbl <- tbl(con, sql("SELECT * FROM 'datasets/dades_r/*.parquet'")) 
 
 dades_total <- tbl(con, sql("SELECT * FROM 'datasets/dades/*.parquet'"))

@@ -995,33 +995,73 @@ r_comparador_chart <- function() {
     
     # Coloring based on if significantly different from comparator
     r_rank_bar_data <- r_rank_bar_data() %>% 
-      mutate(color_pal = case_when(invers == 2 & r != comp_value ~ '#999966',
-                                   is.na(comp_value) | is.na(r) | r == 0 ~ '#999966',
-                                   r > comp_value & invers == 0 ~ '#91BFDB',
-                                   r > comp_value & invers == 1 ~ '#FC8D59',
-                                   r < comp_value & invers == 1 ~ '#91BFDB',
-                                   r < comp_value & invers == 0 ~ '#FC8D59', 
-                                   r == comp_value  ~ '#ccccff',
-                                   TRUE ~ 'pink'),
-             int_hover = case_when(color_pal == '#999966' ~ "Indicador sense interpretació",
-                                   color_pal == '#91BFDB' ~ "Resultat relativament millor que la referència",
-                                   color_pal == '#FC8D59' ~ "Resultat relativament pitjor que la referència",
-                                   color_pal == '#ccccff' ~ "Resultat igual al de la referència",
-                                   TRUE ~ "NA")
+      mutate(
+        
+        # For standardized results, check if confidence interval contains 1 (not significant)
+        is_significant = if (isTRUE(input$r_result_toggle)) {
+          !(ic_inf <= 1 & ic_sup >= 1)  # Significant if CI does NOT contain 1
+        } else {
+          TRUE  # For non-standardized results, always consider significant
+        },
+        
+        color_pal = case_when(
+          
+          # For standardized results with significance consideration
+          isTRUE(input$r_result_toggle) & !is_significant ~ '#CCCCCC',  # Gray for non-significant
+          isTRUE(input$r_result_toggle) & is_significant & resultat > 1 & invers == 2 ~ '#999966',  # Neutral interpretation
+          isTRUE(input$r_result_toggle) & is_significant & resultat < 1 & invers == 2 ~ '#c4c482',  # Neutral interpretation
+          isTRUE(input$r_result_toggle) & is_significant & resultat > 1 & invers == 0 ~ '#91BFDB',  # Better than expected
+          isTRUE(input$r_result_toggle) & is_significant & resultat > 1 & invers == 1 ~ '#FC8D59',  # Worse than expected
+          isTRUE(input$r_result_toggle) & is_significant & resultat < 1 & invers == 1 ~ '#91BFDB',  # Better than expected
+          isTRUE(input$r_result_toggle) & is_significant & resultat < 1 & invers == 0 ~ '#FC8D59',  # Worse than expected
+          isTRUE(input$r_result_toggle) & resultat == 1 ~ '#ccccff',  # Equal to expected
+          isTRUE(input$r_result_toggle) & resultat == comp_value ~ '#ccccff',  # Equal to reference
+          
+          
+          # For raw results (original logic)
+          !isTRUE(input$r_result_toggle) & resultat > comp_value & invers == 2 ~ '#999966',
+          !isTRUE(input$r_result_toggle) & resultat < comp_value & invers == 2 ~ '#c4c482',
+          !isTRUE(input$r_result_toggle) & (is.na(comp_value) | is.na(resultat) | resultat == 0) ~ 'pink',
+          !isTRUE(input$r_result_toggle) & resultat > comp_value & invers == 0 ~ '#91BFDB',
+          !isTRUE(input$r_result_toggle) & resultat > comp_value & invers == 1 ~ '#FC8D59',
+          !isTRUE(input$r_result_toggle) & resultat < comp_value & invers == 1 ~ '#91BFDB',
+          !isTRUE(input$r_result_toggle) & resultat < comp_value & invers == 0 ~ '#FC8D59', 
+          !isTRUE(input$r_result_toggle) & resultat == comp_value ~ '#ccccff',
+          
+          TRUE ~ 'purple'  # Fallback color for debugging
+          
+          
+          ),
+        
+        
+        int_hover = case_when(
+          isTRUE(input$r_result_toggle) & !is_significant ~ "Resultat no significativament diferent del valor esperat",
+          color_pal == '#999966' & !isTRUE(input$r_result_toggle) ~ "Resultat superior a la referència",
+          color_pal == '#c4c482' & !isTRUE(input$r_result_toggle) ~ "Resultat inferior a la referència",
+          color_pal == '#91BFDB' & !isTRUE(input$r_result_toggle) ~ "Resultat relativament millor que la referència",
+          color_pal == '#FC8D59' & !isTRUE(input$r_result_toggle) ~ "Resultat relativament pitjor que la referència",
+          color_pal == '#ccccff' & !isTRUE(input$r_result_toggle) ~ "Resultat igual al de la referència",
+          color_pal == '#999966' & isTRUE(input$r_result_toggle)~ "Resultat significativament superior a l'esperat",
+          color_pal == '#c4c482' & isTRUE(input$r_result_toggle)~ "Resultat significativament inferior a l'esperat",
+          color_pal == '#91BFDB' & isTRUE(input$r_result_toggle)~ "Resultat millor que l'esperat",
+          color_pal == '#FC8D59' & isTRUE(input$r_result_toggle)~ "Resultat pitjor que l'esperat",
+          color_pal == '#ccccff' & isTRUE(input$r_result_toggle)~ "Resultat igual al de la referència",
+          TRUE ~ "NA"
+        )
       )
     
     
     
     # Text for tooltip
     r_tooltip_bar <- if (isTRUE(input$r_result_toggle)) {
-      paste0(r_rank_bar_data()$`Centre/Territori`, ": ", "<b>", round(r_rank_bar_data()$r, 2), "</b> ",  r_rank_bar_data()$ic, " (Raó O/E)",
-             "<br>", r_selected_values$center, ": ", "<b>", round(r_rank_bar_data()$comp_value, 2), "</b> ",  r_rank_bar_data()$comp_ic, " (Raó O/E)",
+      paste0(r_rank_bar_data()$`Centre/Territori`, ": ", "<b>", round(r_rank_bar_data()$resultat, 2), "</b> ",  r_rank_bar_data()$ic, " (Raó O/E)",
+             #"<br>", r_selected_values$center, ": ", "<b>", round(r_rank_bar_data()$comp_value, 2), "</b> ",  r_rank_bar_data()$comp_ic, " (Raó O/E)",
              "<br>", r_rank_bar_data$int_hover)
       
       
     } else {
       paste0(#r_rank_bar_data()$Granularitat, ": ", 
-        r_rank_bar_data()$`Centre/Territori`, ": ", "<b>", round(r_rank_bar_data()$r, 2), "</b> (", r_rank_bar_data()$unitats, ")",
+        r_rank_bar_data()$`Centre/Territori`, ": ", "<b>", round(r_rank_bar_data()$resultat, 2), "</b> (", r_rank_bar_data()$unitats, ")",
         "<br>", r_selected_values$center, ": ", "<b>", round(r_rank_bar_data()$comp_value, 2), "</b> (", r_rank_bar_data()$unitats, ")",
         "<br>", r_rank_bar_data$int_hover)
       
@@ -1084,7 +1124,7 @@ r_comparador_chart <- function() {
                                 size = 3),
                   showlegend = F, 
                   hoverinfo = "text") %>%
-        add_bars(y = ~`Centre/Territori`, x = ~r, text = r_tooltip_bar, textposition = "none", hoverinfo = "text",
+        add_bars(y = ~`Centre/Territori`, x = ~resultat, text = r_tooltip_bar, textposition = "none", hoverinfo = "text",
                  marker = list(color = ~color_pal)) %>%
         layout(
           separators = ",.",     

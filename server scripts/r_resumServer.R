@@ -76,120 +76,98 @@ r_docu_reactive <- reactive({
 })
 
 r_summary_data <- reactive({
-  
   req(input$r_select_any_global)
   req(r_selected_values$geography, r_selected_values$center)
   
   # Determine which result column to use
   result_column <- if (isTRUE(input$r_taula_switch_resum)) "oe" else "r"
   
-  dades_r_resum_tbl <- dades_r_tbl %>% filter(grup_edat == "Total",
-                                            sexe == "Total")  # Your main dataset
-  
-  # Step 1: filter geography only, not center/year
-  dt_geo <- dades_r_resum_tbl %>%
-    filter(Granularitat %in% r_selected_values$geography)
-  
-  # Step 2: collect into R
-  dt_geo <- collect(dt_geo)
-  
-  # Step 3: filter chosen_any
-  chosen_any <- dt_geo %>%
-    filter(`Centre/Territori` %in% r_selected_values$center,
-           any %in% input$r_select_any_global,
-           !is.na(.data[[result_column]]))
-  
-  # Step 4: compute quantiles per indicator over all units in that geography
-  altres <- dt_geo %>%
-    filter(!is.na(.data[[result_column]])) %>%
-    group_by(codi_indicador, nom_indicador, any) %>%
-    summarise(
-      Q0   = quantile(.data[[result_column]], 0, na.rm = TRUE),
-      Q25  = quantile(.data[[result_column]], 0.25, na.rm = TRUE),
-      Q75  = quantile(.data[[result_column]], 0.75, na.rm = TRUE),
-      Q100 = quantile(.data[[result_column]], 1, na.rm = TRUE),
-      .groups = "drop"
-    )
-  
-  # Step 5: join quantiles back to chosen_any
-  chosen_any <- left_join(chosen_any, altres, by = c("codi_indicador", "nom_indicador", "any"))
-  
-  
-  # Step 6: add marker colors and scaling
-  final <- chosen_any %>%
-    mutate(
-      marker_colour = case_when(
-        r > mitjana & invers == 0 ~ '#91BFDB',
-        r > mitjana & invers == 1 ~ '#FC8D59',
-        r < mitjana & invers == 1 ~ '#91BFDB',
-        r < mitjana & invers == 0 ~ '#FC8D59',
-        invers == 2 ~ '#FFFFFF',
-        TRUE ~ '#FFFFFF'
-      ),
-      chosen_value = r,
-      # keep natural quartiles
-      q0 = Q0,
-      q25 = Q25,
-      q75 = Q75,
-      q100 = Q100,
-      # compute scale min/max per row like original script
-      scale_min = pmin(Q0, mitjana - (Q100 - mitjana)),
-      scale_max = pmax(Q100, mitjana + (mitjana - Q0))
+  # Use the pre-calculated dataset
+  chosen_any <- dades_r_resum_tbl %>%
+    filter(
+      Granularitat == !!r_selected_values$geography,
+      `Centre/Territori` == !!r_selected_values$center,
+      any == !!input$r_select_any_global,
+      !is.na(.data[[result_column]])
     ) %>%
-    mutate(
-      # normalise based on scale_min/scale_max
-      across(c(chosen_value, q0, q25, q75, q100), ~ (. - scale_min) / (scale_max - scale_min)),
-      ic = paste0("[", round(ic_inf, 1), " - ", round(ic_sup, 1), "]"),
-      row_number = row_number(),
-      spine_chart = NA,
-      display_type = ifelse(result_column == "oe", "Estandarditzat", "Cru"),
-      r = round(r, 2)
-    )
+    collect()
   
+  if(nrow(chosen_any) == 0) {
+    return(data.frame())
+  }
   
-  print(names(final))
+  # Process based on result type
+  if(result_column == "oe") {
+    # For standardized results, use oe quartiles directly
+    final <- chosen_any %>%
+      mutate(
+        # Use raw oe quartiles - no normalization needed
+        Q0 = Q0_oe,
+        Q25 = Q25_oe,
+        Q75 = Q75_oe,
+        Q100 = Q100_oe,
+        # For the spine chart, we'll use these raw values
+        q0 = Q0_oe,
+        q25 = Q25_oe,
+        q75 = Q75_oe,
+        q100 = Q100_oe,
+        chosen_value = oe,
+        row_number = row_number(),
+        spine_chart = NA,
+        display_type = "Estandarditzat"
+      )
+  } else {
+    # For raw results, use normalized r quartiles
+    final <- chosen_any %>%
+      mutate(
+        # Use raw r quartiles for display
+        Q0 = Q0_r,
+        Q25 = Q25_r,
+        Q75 = Q75_r,
+        Q100 = Q100_r,
+        # Use normalized values for the spine chart
+        q0 = q0_norm_r,
+        q25 = q25_norm_r,
+        q75 = q75_norm_r,
+        q100 = q100_norm_r,
+        chosen_value = chosen_value_norm_r,
+        row_number = row_number(),
+        spine_chart = NA,
+        display_type = "Cru",
+        r = round(r, 2)
+      )
+  }
   
-  
-  
-  # Step 8: select final columns for reactable
+  # Select final columns based on result type
   if(result_column == "oe") {
     final <- final %>%
       select(
         ambit, ambit_curt, dimensio, codi_indicador, 
         nom_indicador, any, oe, ic, trend_icona, Granularitat, `Centre/Territori`,
-        row_number, spine_chart, Q100, Q75, Q25, Q0, q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
+        row_number, spine_chart, Q100, Q75, Q25, Q0, 
+        q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
       )
   } else {
     final <- final %>%
       select(
         ambit, ambit_curt, dimensio, codi_indicador, 
         nom_indicador, any, r, mitjana, unitats, trend_icona, Granularitat, `Centre/Territori`,
-        row_number, spine_chart, Q100, Q75, Q25, Q0, q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
+        row_number, spine_chart, Q100, Q75, Q25, Q0, 
+        q100, q75, q25, q0, chosen_value, marker_colour, invers, display_type
       )
   }
   
-  
-  # Step 7: join documentation table, selecting only needed columns
+  # Join documentation table
   final <- final %>%
     left_join(
       r_docu_reactive() %>% 
-      mutate(code = as.character(code),
-             name = as.character(name),
-             Àmbit = as.character(Àmbit),
-             Dimensió = as.character(Dimensió)),
+        mutate(code = as.character(code),
+               name = as.character(name),
+               Àmbit = as.character(Àmbit),
+               Dimensió = as.character(Dimensió)),
       by = c("codi_indicador" = "code", "nom_indicador" = "name", "ambit" = "Àmbit", "dimensio" = "Dimensió")
     )
   
-  #print("FINAL")
-  #print(names(final))
-  
-  #print("FINAL")
-  #print(final)
-  
-  
-  
-  #print(names(final))
-  #print(final[17:24])
   return(final)
 })
 
@@ -254,11 +232,9 @@ summary_data_cat <- reactive({
 output$r_select_any_global_ui <- renderUI({
   req(r_selected_values$geography, r_selected_values$center)
   
-  # Filter directly in DuckDB, then collect into R
-  selected_data <- dades_r_tbl %>%
+  # Use pre-calculated dataset for better performance
+  selected_data <- dades_r_resum_tbl %>%
     filter(
-      grup_edat == "Total",
-      sexe == "Total",
       Granularitat == !!r_selected_values$geography,
       `Centre/Territori` == !!r_selected_values$center
     ) %>%

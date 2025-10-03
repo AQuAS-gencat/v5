@@ -5,9 +5,9 @@ account: aquas-gencat
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 13681861
-bundleId: 10978767
+bundleId: 10987452
 url: https://aquas-gencat.shinyapps.io/cdr25/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: codebook5.parquet
+ignoredFiles: abs_rs_penedes.csv|codebook5.parquet|pob_assignada_atdom.xlsx|pob_assignada_atdom_cdr_edat65.xlsx
